@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Video games: from a bouncing dot to open worlds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f4f1ff; --surface:#ffffff; --ink:#1b1740; --muted:#5a5680;
+  --pink:#e0256b; --cyan:#0c9d93; --yellow:#ffd23f; --line:#1b1740;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#14112e; --surface:#1f1b45; --ink:#f4f1ff; --muted:#aaa5d4;
+    --pink:#ff5c95; --cyan:#27e0d0; --line:#f4f1ff; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#14112e; --surface:#1f1b45; --ink:#f4f1ff; --muted:#aaa5d4;
+  --pink:#ff5c95; --cyan:#27e0d0; --line:#f4f1ff; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.05rem/1.65 "DM Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Press Start 2P","Courier New",monospace;font-weight:400;line-height:1.45;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
+.wrap{max-width:62rem;margin:0 auto;padding:0 1.25rem}
+section{padding:4rem 0}
+
+/* Hero */
+.hero{padding:3rem 0 2.5rem}
+.hero h1{font-size:clamp(1.6rem,6.2vw,3.4rem);letter-spacing:.02em}
+.hero p{max-width:34rem;color:var(--muted);font-size:1.15rem;margin:1.25rem 0 1.75rem}
+.screen{border:4px solid var(--line);background:#14112e;box-shadow:8px 8px 0 var(--pink);line-height:0}
+.screen canvas{width:100%;height:auto;display:block;image-rendering:pixelated}
+.btn{display:inline-block;font:400 .75rem "Press Start 2P",monospace;background:var(--yellow);color:#1b1740;
+  border:3px solid var(--line);padding:.9rem 1.1rem;text-decoration:none;box-shadow:4px 4px 0 var(--line);cursor:pointer}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line)}
+
+h2{font-size:clamp(1rem,3.4vw,1.5rem);margin-bottom:.75rem}
+.lead{color:var(--muted);max-width:40rem;margin:0 0 2rem}
+
+/* Chronologie */
+.timeline{list-style:none;margin:0;padding:0;border-left:4px solid var(--line)}
+.timeline li{position:relative;padding:0 0 1.75rem 1.75rem}
+.timeline li::before{content:"";position:absolute;left:-12px;top:.35rem;width:20px;height:20px;background:var(--cyan);border:3px solid var(--line)}
+.timeline b{font:400 .8rem "Press Start 2P",monospace;color:var(--pink);display:block;margin-bottom:.35rem}
+.timeline h3{font-size:.85rem;margin-bottom:.4rem}
+.timeline p{margin:0;max-width:40rem}
+
+/* Genres */
+.tabs{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.25rem}
+.tab{font:400 .65rem "Press Start 2P",monospace;padding:.8rem .9rem;border:3px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--pink);color:#fff;box-shadow:4px 4px 0 var(--line)}
+.panel{background:var(--surface);border:3px solid var(--line);padding:1.5rem;display:grid;gap:1rem;max-width:44rem}
+.panel[hidden]{display:none}
+.panel h3{font-size:.95rem}
+.panel p{margin:0}
+.panel ul{margin:0;padding-left:1.2rem}
+
+/* Français */
+.fr{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
+.fr article{border:3px solid var(--line);padding:1.25rem;background:var(--surface)}
+.fr article:nth-child(1){border-top:10px solid var(--pink)}
+.fr article:nth-child(2){border-top:10px solid var(--cyan)}
+.fr article:nth-child(3){border-top:10px solid var(--yellow)}
+.fr h3{font-size:.8rem;margin-bottom:.5rem}
+.fr small{color:var(--muted);display:block;margin-bottom:.5rem}
+.fr p{margin:0}
+
+footer{padding:2.5rem 0 3rem;color:var(--muted);font-size:.95rem;border-top:4px solid var(--line)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>Video<br>games</h1>
+    <p>Born in a lab in 1958, now one of the biggest pastimes on the planet. A quick tour of the history, the genres and the American creators behind them.</p>
+    <div class="screen" aria-hidden="true"><canvas id="pong" width="480" height="200"></canvas></div>
+    <p style="margin:1.5rem 0 0"><a class="btn" href="#history">Start</a></p>
+  </div>
+</header>
+
+<main>
+<section id="history">
+  <div class="wrap">
+    <h2>A history in seven levels</h2>
+    <p class="lead">From oscilloscope screens to open worlds, here are the big milestones.</p>
+    <ol class="timeline">
+      <li><b>1958</b><h3>Tennis for Two</h3><p>Physicist William Higinbotham builds a tennis game shown on an oscilloscope to entertain visitors to an American laboratory.</p></li>
+      <li><b>1972</b><h3>Pong</h3><p>Atari releases Pong. Two paddles, one ball: arcade games move into bars and pizza parlors.</p></li>
+      <li><b>1985</b><h3>Super Mario Bros.</h3><p>On the NES, Nintendo revives the market after the 1983 crash and makes the platformer a household genre.</p></li>
+      <li><b>1994</b><h3>PlayStation</h3><p>Sony joins the race with 3D games on CD, reaching an older audience.</p></li>
+      <li><b>2007</b><h3>The smartphone</h3><p>With the iPhone, games fit in your pocket. Millions of people start playing without ever thinking of themselves as “gamers.”</p></li>
+      <li><b>2011</b><h3>Minecraft</h3><p>Mojang’s building game becomes one of the best-selling games of all time.</p></li>
+      <li><b>2017</b><h3>Switch</h3><p>Nintendo offers a console you can play on the couch or on the go. The same year, Fortnite popularizes the free-to-play game with seasons.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="genres">
+  <div class="wrap">
+    <h2>Pick your genre</h2>
+    <p class="lead">Most games fit into a genre. Select one to see what it offers.</p>
+    <div class="tabs" role="tablist" aria-label="Video game genres"></div>
+    <div id="panels"></div>
+  </div>
+</section>
+
+<section id="usa">
+  <div class="wrap">
+    <h2>And in the USA?</h2>
+    <p class="lead">The United States is home to major publishers and many influential studios.</p>
+    <div class="fr">
+      <article><small>1993 · id Software</small><h3>Doom</h3><p>Made in Texas, it helped make the first-person shooter a mainstream genre and spread online multiplayer.</p></article>
+      <article><small>2004 · Blizzard Entertainment</small><h3>World of Warcraft</h3><p>A California studio’s online role-playing world, where millions of players adventure together.</p></article>
+      <article><small>2013 · Naughty Dog</small><h3>The Last of Us</h3><p>A story-driven action game from a California studio, praised for its characters and emotional writing.</p></article>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">An introductory page for discovering the topic. Dates are those of first releases.</div>
+</footer>
+
+<script>
+const genres=[
+ {n:"Action",t:"Reflexes, exploration and combat. The broadest genre, often mixed with adventure.",l:["The Legend of Zelda : Breath of the Wild","Hollow Knight","Celeste"]},
+ {n:"RPG",t:"You play a character who grows, makes choices and lives through a long story.",l:["Final Fantasy VII","The Witcher 3","Skyrim"]},
+ {n:"Strategy",t:"Plan ahead, manage resources and outthink your opponent, in turns or in real time.",l:["Civilization","Age of Empires II","XCOM"]},
+ {n:"Puzzle",t:"Simple rules, real thinking. Perfect for short sessions.",l:["Tetris","Portal","Baba Is You"]},
+ {n:"Simulation",t:"Build, farm, pilot or manage: the game recreates (or imagines) an activity.",l:["The Sims","Minecraft","Stardew Valley"]},
+ {n:"Sports",t:"Soccer, basketball, racing or driving: the thrill of competition, solo or with friends.",l:["EA Sports FC","Rocket League","Mario Kart"]}
+];
+const tabs=document.querySelector(".tabs"),panels=document.getElementById("panels");
+genres.forEach((g,i)=>{
+  const b=document.createElement("button");
+  b.className="tab";b.role="tab";b.id="tab"+i;b.textContent=g.n;
+  b.setAttribute("aria-selected",i===0);b.setAttribute("aria-controls","p"+i);
+  tabs.appendChild(b);
+  const p=document.createElement("div");
+  p.className="panel";p.id="p"+i;p.role="tabpanel";p.hidden=i!==0;
+  p.setAttribute("aria-labelledby","tab"+i);
+  p.innerHTML="<h3>"+g.n+"</h3><p>"+g.t+"</p><ul>"+g.l.map(x=>"<li>"+x+"</li>").join("")+"</ul>";
+  panels.appendChild(p);
+  b.addEventListener("click",()=>{
+    tabs.querySelectorAll(".tab").forEach((t,j)=>{t.setAttribute("aria-selected",j===i);panels.children[j].hidden=j!==i});
+  });
+});
+
+/* Pong automatique */
+(function(){
+  const c=document.getElementById("pong"),x=c.getContext("2d"),W=c.width,H=c.height;
+  let bx=W/2,by=H/2,vx=3,vy=2,l=H/2,r=H/2;const ph=44;
+  const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  function draw(){
+    x.fillStyle="#14112e";x.fillRect(0,0,W,H);
+    x.fillStyle="#6b66a8";for(let y=0;y<H;y+=16)x.fillRect(W/2-2,y,4,8);
+    x.fillStyle="#ff5c95";x.fillRect(16,l-ph/2,8,ph);
+    x.fillStyle="#27e0d0";x.fillRect(W-24,r-ph/2,8,ph);
+    x.fillStyle="#ffd23f";x.fillRect(bx-5,by-5,10,10);
+  }
+  function step(){
+    bx+=vx;by+=vy;
+    if(by<5||by>H-5)vy=-vy;
+    l+=(by-l)*.12;r+=(by-r)*.12;
+    if(bx<28||bx>W-28)vx=-vx;
+    draw();
+    if(!still)requestAnimationFrame(step);
+  }
+  step();
+})();
+</script>
+</body>
+</html>
