@@ -3,182 +3,373 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Video games: from a bouncing dot to open worlds</title>
+<title>GameCore: video game history, icons and search</title>
+<meta name="description" content="Video game history highlights, American icons and a searchable list of classic games.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Exo+2:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
-  --bg:#f4f1ff; --surface:#ffffff; --ink:#1b1740; --muted:#5a5680;
-  --pink:#e0256b; --cyan:#0c9d93; --yellow:#ffd23f; --line:#1b1740;
+  --bg:#f4f1ff;--card:#fff;--ink:#1d1647;--mut:#5a5290;--pri:#5b3fe0;--bd:#cfc6ff;
+  --g1:rgba(214,60,160,.14);--g2:rgba(40,160,200,.14);--star:rgba(91,63,224,.35);--fl:rgba(91,63,224,.25);--glow:rgba(91,63,224,.18);--btn:#6a47f0;--hd:#fff;
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#14112e; --surface:#1f1b45; --ink:#f4f1ff; --muted:#aaa5d4;
-    --pink:#ff5c95; --cyan:#27e0d0; --line:#f4f1ff; color-scheme:dark;
+    --bg:#0b0912;--card:#121018;--ink:#e9e4ff;--mut:#a79fd6;--pri:#8466ff;--bd:#3b2c8c;
+    --g1:rgba(255,79,163,.2);--g2:rgba(46,242,224,.14);--star:rgba(255,255,255,.7);--fl:rgba(132,102,255,.4);--glow:rgba(132,102,255,.35);--hd:#0d0b16;color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#14112e; --surface:#1f1b45; --ink:#f4f1ff; --muted:#aaa5d4;
-  --pink:#ff5c95; --cyan:#27e0d0; --line:#f4f1ff; color-scheme:dark;
+  --bg:#0b0912;--card:#121018;--ink:#e9e4ff;--mut:#a79fd6;--pri:#8466ff;--bd:#3b2c8c;
+  --g1:rgba(255,79,163,.2);--g2:rgba(46,242,224,.14);--star:rgba(255,255,255,.7);--fl:rgba(132,102,255,.4);--glow:rgba(132,102,255,.35);--hd:#0d0b16;color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 1.05rem/1.65 "DM Sans",system-ui,sans-serif}
-h1,h2,h3{font-family:"Press Start 2P","Courier New",monospace;font-weight:400;line-height:1.45;margin:0}
-a{color:inherit}
-:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
-.wrap{max-width:62rem;margin:0 auto;padding:0 1.25rem}
-section{padding:4rem 0}
+html{scroll-behavior:smooth;scroll-padding-top:calc(env(safe-area-inset-top,0px) + 5rem)}
+body{margin:0;background-color:var(--bg);color:var(--ink);font:400 1.05rem/1.6 "Exo 2",system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--hd)}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60rem 32rem at 12% -8%,var(--g1),transparent 60%),radial-gradient(52rem 32rem at 95% 8%,var(--g2),transparent 60%),radial-gradient(1.6px 1.6px at 22px 34px,var(--star),transparent),radial-gradient(1px 1px at 96px 120px,var(--star),transparent);background-size:auto,auto,140px 160px,170px 190px}
+.floor{position:fixed;left:-50%;right:-50%;bottom:0;height:42vh;z-index:-1;pointer-events:none;background:linear-gradient(var(--fl) 1px,transparent 1px),linear-gradient(90deg,var(--fl) 1px,transparent 1px);background-size:64px 64px;transform:perspective(420px) rotateX(62deg);transform-origin:bottom;-webkit-mask-image:linear-gradient(transparent,#000);mask-image:linear-gradient(transparent,#000)}
+h1,h2,h3,.logo{font-family:Orbitron,"Trebuchet MS",sans-serif;margin:0}
+:focus-visible{outline:3px solid var(--pri);outline-offset:3px}
+.wrap{max-width:70rem;margin:0 auto;padding:0 1.25rem}
 
-/* Hero */
-.hero{padding:3rem 0 2.5rem}
-.hero h1{font-size:clamp(1.6rem,6.2vw,3.4rem);letter-spacing:.02em}
-.hero p{max-width:34rem;color:var(--muted);font-size:1.15rem;margin:1.25rem 0 1.75rem}
-.screen{border:4px solid var(--line);background:#14112e;box-shadow:8px 8px 0 var(--pink);line-height:0}
-.screen canvas{width:100%;height:auto;display:block;image-rendering:pixelated}
-.btn{display:inline-block;font:400 .75rem "Press Start 2P",monospace;background:var(--yellow);color:#1b1740;
-  border:3px solid var(--line);padding:.9rem 1.1rem;text-decoration:none;box-shadow:4px 4px 0 var(--line);cursor:pointer}
-.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--hd);border-bottom:1px solid var(--bd)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-top:.8rem;padding-bottom:.8rem;flex-wrap:wrap}
+.logo{font-size:1.7rem;font-weight:700;color:var(--pri);text-decoration:none;letter-spacing:.04em}
+nav{display:flex;gap:1.6rem;flex-wrap:wrap}
+nav a{text-decoration:none;font-weight:500;font-size:1.05rem}
+nav a:hover{color:var(--pri)}
+#theme{font:500 .95rem "Exo 2",sans-serif;color:var(--pri);background:none;border:1px solid var(--bd);border-radius:999px;padding:.35rem .9rem;cursor:pointer}
 
-h2{font-size:clamp(1rem,3.4vw,1.5rem);margin-bottom:.75rem}
-.lead{color:var(--muted);max-width:40rem;margin:0 0 2rem}
+section{padding:3.5rem 0}
+.hero{padding:3rem 0 2rem}
+.hero .wrap{display:grid;gap:2rem;align-items:center}
+@media (min-width:54rem){.hero .wrap{grid-template-columns:1.1fr .9fr}}
+h1{font-size:clamp(1.8rem,5vw,3rem);line-height:1.2;color:var(--pri);text-shadow:0 0 24px var(--glow)}
+.hero p{color:var(--mut);font-size:1.15rem;max-width:34rem;margin:1rem 0 1.5rem}
+.btns{display:flex;gap:.8rem;flex-wrap:wrap}
+.btn{font:700 1rem "Exo 2",sans-serif;background:var(--btn);color:#fff;border:0;border-radius:8px;padding:.7rem 1.3rem;text-decoration:none;cursor:pointer;box-shadow:0 0 18px var(--glow)}
+.btn.alt{background:none;color:var(--pri);border:1px solid var(--bd);box-shadow:none}
+.crt{border:1px solid var(--bd);border-radius:12px;overflow:hidden;line-height:0;background:#0a0720;box-shadow:0 0 30px var(--glow);position:relative}
+.crt canvas{width:100%;height:auto;display:block;image-rendering:pixelated}
+.crt::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.25) 0 1px,transparent 1px 3px)}
 
-/* Chronologie */
-.timeline{list-style:none;margin:0;padding:0;border-left:4px solid var(--line)}
-.timeline li{position:relative;padding:0 0 1.75rem 1.75rem}
-.timeline li::before{content:"";position:absolute;left:-12px;top:.35rem;width:20px;height:20px;background:var(--cyan);border:3px solid var(--line)}
-.timeline b{font:400 .8rem "Press Start 2P",monospace;color:var(--pink);display:block;margin-bottom:.35rem}
-.timeline h3{font-size:.85rem;margin-bottom:.4rem}
-.timeline p{margin:0;max-width:40rem}
+.head{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1.5rem}
+h2{font-size:clamp(1.5rem,4vw,2.4rem);color:var(--pri);text-shadow:0 0 22px var(--glow)}
+.grid{display:grid;gap:1.6rem;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr))}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 24px var(--glow)}
+.card .body{padding:1.3rem 1.4rem 1.5rem;display:flex;flex-direction:column;gap:.7rem;flex:1}
+.card h3{font-size:1.15rem;line-height:1.4}
+.card p{margin:0;color:var(--mut)}
+.card .more{color:var(--ink)}
+.card .btn{align-self:flex-start;margin-top:auto}
+.card[hidden]{display:none}
 
-/* Genres */
-.tabs{display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:1.25rem}
-.tab{font:400 .65rem "Press Start 2P",monospace;padding:.8rem .9rem;border:3px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
-.tab[aria-selected="true"]{background:var(--pink);color:#fff;box-shadow:4px 4px 0 var(--line)}
-.panel{background:var(--surface);border:3px solid var(--line);padding:1.5rem;display:grid;gap:1rem;max-width:44rem}
-.panel[hidden]{display:none}
-.panel h3{font-size:.95rem}
-.panel p{margin:0}
-.panel ul{margin:0;padding-left:1.2rem}
+.art{height:11rem;position:relative;display:grid;place-items:center;overflow:hidden;border-bottom:1px solid var(--bd)}
+.a-pong{background:linear-gradient(135deg,#1b0b3a,#4a1170 60%,#c2185b)}
+.a-pong i{position:absolute;background:#fff;box-shadow:0 0 14px #fff}
+.a-pong i:nth-child(1){left:12%;top:30%;width:10px;height:56px;background:#ff4fa3;box-shadow:0 0 14px #ff4fa3}
+.a-pong i:nth-child(2){right:12%;top:52%;width:10px;height:56px;background:#2ef2e0;box-shadow:0 0 14px #2ef2e0}
+.a-pong i:nth-child(3){left:52%;top:42%;width:14px;height:14px;background:#ffe14d;box-shadow:0 0 16px #ffe14d}
+.a-sign{background:linear-gradient(180deg,#26255e,#6a2c91 55%,#12b5c9)}
+.sign{font:700 2.4rem Orbitron,sans-serif;color:#ffe14d;background:#2a0610;border:4px solid #ff2d55;border-radius:14px;padding:.4rem 1.2rem;text-shadow:0 0 14px #ff9d00;box-shadow:0 0 22px #ff2d55}
+.a-pad{background:linear-gradient(135deg,#0d1b4a,#3c1d8f 60%,#ff4fa3)}
+.a-year{background:linear-gradient(135deg,#0a1f2e,#14456b 60%,#2b2c8f)}
+.year{font:700 2.6rem Orbitron,sans-serif;color:#2ef2e0;text-shadow:0 0 16px #2ef2e0}
 
-/* Français */
-.fr{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr))}
-.fr article{border:3px solid var(--line);padding:1.25rem;background:var(--surface)}
-.fr article:nth-child(1){border-top:10px solid var(--pink)}
-.fr article:nth-child(2){border-top:10px solid var(--cyan)}
-.fr article:nth-child(3){border-top:10px solid var(--yellow)}
-.fr h3{font-size:.8rem;margin-bottom:.5rem}
-.fr small{color:var(--muted);display:block;margin-bottom:.5rem}
-.fr p{margin:0}
+.panel{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:1.6rem;box-shadow:0 0 24px var(--glow)}
+.panel label{display:block;font:500 1.1rem Orbitron,sans-serif;color:var(--pri);margin-bottom:.8rem}
+#q{width:100%;font:400 1.05rem "Exo 2",sans-serif;color:var(--ink);background:var(--bg);border:2px solid var(--pri);border-radius:8px;padding:.8rem 1rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 .4rem}
+.chip{font:500 .95rem "Exo 2",sans-serif;color:var(--ink);background:none;border:1px solid var(--bd);border-radius:999px;padding:.35rem .9rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--btn);border-color:var(--btn);color:#fff}
+#count{color:var(--mut);margin:.8rem 0 1rem}
+#results{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));align-items:start}
+.game{border:1px solid var(--bd);border-radius:10px;padding:.9rem 1rem;background:var(--bg)}
+.game b{display:block;font-family:Orbitron,sans-serif;font-weight:500;font-size:.95rem;line-height:1.4}
+.game span{color:var(--mut);font-size:.95rem}
+.game summary{cursor:pointer;list-style:none}.game summary::-webkit-details-marker{display:none}
+.game summary b{display:block;font:500 .95rem/1.4 Orbitron,sans-serif}
+.game[open]{border-color:var(--pri);box-shadow:0 0 18px var(--glow)}
+.game dl{margin:.8rem 0 0;display:grid;gap:.35rem;font-size:.92rem}
+.game dl div{display:grid;grid-template-columns:7.4rem 1fr;gap:.6rem;border-top:1px solid var(--bd);padding-top:.35rem}
+.game dt{color:var(--pri);font-weight:700}.game dd{margin:0}
+#empty{color:var(--mut)}
 
-footer{padding:2.5rem 0 3rem;color:var(--muted);font-size:.95rem;border-top:4px solid var(--line)}
+footer{border-top:1px solid var(--bd);padding:2rem 0 3rem;color:var(--mut);font-size:.95rem;background:var(--hd)}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="hero">
+<div class="floor" aria-hidden="true"></div>
+<header>
   <div class="wrap">
-    <h1>Video<br>games</h1>
-    <p>Born in a lab in 1958, now one of the biggest pastimes on the planet. A quick tour of the history, the genres and the American creators behind them.</p>
-    <div class="screen" aria-hidden="true"><canvas id="pong" width="480" height="200"></canvas></div>
-    <p style="margin:1.5rem 0 0"><a class="btn" href="#history">Start</a></p>
+    <a class="logo" href="#home">GameCore</a>
+    <nav aria-label="Main"><a href="#home">Home</a><a href="#history">History</a><a href="#usa">Made in USA</a><a href="#search">Search</a></nav>
+    <button id="theme" aria-label="Switch light and dark theme">◐ Theme</button>
   </div>
 </header>
 
 <main>
-<section id="history">
+<section id="home" class="hero">
   <div class="wrap">
-    <h2>A history in seven levels</h2>
-    <p class="lead">From oscilloscope screens to open worlds, here are the big milestones.</p>
-    <ol class="timeline">
-      <li><b>1958</b><h3>Tennis for Two</h3><p>Physicist William Higinbotham builds a tennis game shown on an oscilloscope to entertain visitors to an American laboratory.</p></li>
-      <li><b>1972</b><h3>Pong</h3><p>Atari releases Pong. Two paddles, one ball: arcade games move into bars and pizza parlors.</p></li>
-      <li><b>1985</b><h3>Super Mario Bros.</h3><p>On the NES, Nintendo revives the market after the 1983 crash and makes the platformer a household genre.</p></li>
-      <li><b>1994</b><h3>PlayStation</h3><p>Sony joins the race with 3D games on CD, reaching an older audience.</p></li>
-      <li><b>2007</b><h3>The smartphone</h3><p>With the iPhone, games fit in your pocket. Millions of people start playing without ever thinking of themselves as “gamers.”</p></li>
-      <li><b>2011</b><h3>Minecraft</h3><p>Mojang’s building game becomes one of the best-selling games of all time.</p></li>
-      <li><b>2017</b><h3>Switch</h3><p>Nintendo offers a console you can play on the couch or on the go. The same year, Fortnite popularizes the free-to-play game with seasons.</p></li>
-    </ol>
+    <div>
+      <h1>Video games, from a bouncing dot to open worlds</h1>
+      <p>Browse the milestones, meet the American icons and search 100 games, each with a 10-line information sheet.</p>
+      <div class="btns"><a class="btn" href="#history">See highlights</a><a class="btn alt" href="#search">Search games</a></div>
+    </div>
+    <div class="crt" aria-hidden="true"><canvas id="pong" width="480" height="300"></canvas></div>
   </div>
 </section>
 
-<section id="genres">
+<section id="history">
   <div class="wrap">
-    <h2>Pick your genre</h2>
-    <p class="lead">Most games fit into a genre. Select one to see what it offers.</p>
-    <div class="tabs" role="tablist" aria-label="Video game genres"></div>
-    <div id="panels"></div>
+    <div class="head"><h2>Game History Highlights</h2><button class="btn" id="all" aria-expanded="false">See all</button></div>
+    <div class="grid" id="hist"></div>
   </div>
 </section>
 
 <section id="usa">
   <div class="wrap">
-    <h2>And in the USA?</h2>
-    <p class="lead">The United States is home to major publishers and many influential studios.</p>
-    <div class="fr">
-      <article><small>1993 · id Software</small><h3>Doom</h3><p>Made in Texas, it helped make the first-person shooter a mainstream genre and spread online multiplayer.</p></article>
-      <article><small>2004 · Blizzard Entertainment</small><h3>World of Warcraft</h3><p>A California studio’s online role-playing world, where millions of players adventure together.</p></article>
-      <article><small>2013 · Naughty Dog</small><h3>The Last of Us</h3><p>A story-driven action game from a California studio, praised for its characters and emotional writing.</p></article>
+    <div class="head"><h2>Made in the USA</h2></div>
+    <div class="grid" id="us"></div>
+  </div>
+</section>
+
+<section id="search">
+  <div class="wrap">
+    <div class="head" style="justify-content:center"><h2>Search Games</h2></div>
+    <div class="panel">
+      <label for="q">Search by title, genre, studio or year</label>
+      <input id="q" type="search" placeholder="Try “Zelda”, “Nintendo” or “1993”" autocomplete="off">
+      <div class="chips" role="group" aria-label="Filter by genre"></div>
+      <p id="count" aria-live="polite"></p>
+      <div id="results"></div>
+      <p id="empty" hidden>No game found. Try another title, or pick a genre such as RPG or Puzzle.</p>
     </div>
   </div>
 </section>
 </main>
 
-<footer>
-  <div class="wrap">An introductory page for discovering the topic. Dates are those of first releases.</div>
-</footer>
+<footer><div class="wrap">GameCore is an introductory page. Dates are those of first releases.</div></footer>
+<noscript><p class="wrap">This page needs JavaScript to show its content.</p></noscript>
 
 <script>
-const genres=[
- {n:"Action",t:"Reflexes, exploration and combat. The broadest genre, often mixed with adventure.",l:["The Legend of Zelda : Breath of the Wild","Hollow Knight","Celeste"]},
- {n:"RPG",t:"You play a character who grows, makes choices and lives through a long story.",l:["Final Fantasy VII","The Witcher 3","Skyrim"]},
- {n:"Strategy",t:"Plan ahead, manage resources and outthink your opponent, in turns or in real time.",l:["Civilization","Age of Empires II","XCOM"]},
- {n:"Puzzle",t:"Simple rules, real thinking. Perfect for short sessions.",l:["Tetris","Portal","Baba Is You"]},
- {n:"Simulation",t:"Build, farm, pilot or manage: the game recreates (or imagines) an activity.",l:["The Sims","Minecraft","Stardew Valley"]},
- {n:"Sports",t:"Soccer, basketball, racing or driving: the thrill of competition, solo or with friends.",l:["EA Sports FC","Rocket League","Mario Kart"]}
-];
-const tabs=document.querySelector(".tabs"),panels=document.getElementById("panels");
-genres.forEach((g,i)=>{
-  const b=document.createElement("button");
-  b.className="tab";b.role="tab";b.id="tab"+i;b.textContent=g.n;
-  b.setAttribute("aria-selected",i===0);b.setAttribute("aria-controls","p"+i);
-  tabs.appendChild(b);
-  const p=document.createElement("div");
-  p.className="panel";p.id="p"+i;p.role="tabpanel";p.hidden=i!==0;
-  p.setAttribute("aria-labelledby","tab"+i);
-  p.innerHTML="<h3>"+g.n+"</h3><p>"+g.t+"</p><ul>"+g.l.map(x=>"<li>"+x+"</li>").join("")+"</ul>";
-  panels.appendChild(p);
-  b.addEventListener("click",()=>{
-    tabs.querySelectorAll(".tab").forEach((t,j)=>{t.setAttribute("aria-selected",j===i);panels.children[j].hidden=j!==i});
-  });
-});
+const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const PAD='<svg viewBox="0 0 200 120" width="62%" role="img" aria-label="Game controller"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4fc3ff"/><stop offset="1" stop-color="#a24bff"/></linearGradient></defs><path d="M50 30h100c20 0 32 20 38 50l4 20c2 12-12 18-22 8l-18-18H48L30 108c-10 10-24 4-22-8l4-20c6-30 18-50 38-50z" fill="#0b0b22" stroke="url(#g)" stroke-width="4"/><path d="M62 48v10H52v8h10v10h8V66h10v-8H70V48z" fill="url(#g)"/><circle cx="138" cy="52" r="6" fill="#ff4fa3"/><circle cx="154" cy="64" r="6" fill="#2ef2e0"/><circle cx="122" cy="64" r="6" fill="#ffe14d"/><circle cx="138" cy="76" r="6" fill="#7dff6b"/></svg>';
 
-/* Pong automatique */
+const history=[
+ {y:"1958",k:"year",t:"Tennis for Two",d:"Physicist William Higinbotham builds a tennis game shown on an oscilloscope.",m:"It ran on an analog computer and was shown to visitors at Brookhaven National Laboratory."},
+ {y:"1972",k:"pong",t:"Pong",d:"Atari releases Pong. Two paddles, one ball: arcades move into bars and pizza parlors.",m:"Pong began as a training exercise for Atari engineer Allan Alcorn."},
+ {y:"1985",k:"sign",t:"Super Mario Bros.",d:"On the NES, Nintendo revives the market after the 1983 crash.",m:"It sold more than 40 million copies, a record that stood for decades."},
+ {y:"1994",k:"pad",t:"PlayStation",d:"Sony joins the race with 3D games on CD, reaching an older audience.",m:"The original console launched in Japan in December 1994."},
+ {y:"2007",k:"year",t:"The smartphone",d:"With the iPhone, games fit in your pocket and reach people who never thought of themselves as “gamers.”",m:"The first iPhone launched in June 2007. The App Store followed in 2008."},
+ {y:"2011",k:"year",t:"Minecraft",d:"Mojang’s building game becomes one of the best-selling games of all time.",m:"Its full release came in November 2011, after years in public beta."},
+ {y:"2017",k:"year",t:"Nintendo Switch",d:"A console you can play on the couch or on the go. Fortnite also popularizes free-to-play seasons.",m:"The Switch launched in March 2017."}
+];
+const usa=[
+ {y:"1993",k:"year",t:"Doom",d:"Made in Texas by id Software, it helped make the first-person shooter a mainstream genre."},
+ {y:"2004",k:"year",t:"World of Warcraft",d:"Blizzard Entertainment’s online role-playing world, where millions of players adventure together."},
+ {y:"2013",k:"year",t:"The Last of Us",d:"A story-driven action game from Naughty Dog, praised for its characters and writing."}
+];
+function art(k,y){
+  const d=document.createElement("div");d.className="art a-"+k;d.setAttribute("aria-hidden","true");
+  if(k==="pong")d.innerHTML="<i></i><i></i><i></i>";
+  else if(k==="sign")d.innerHTML='<span class="sign">'+y+"</span>";
+  else if(k==="pad")d.innerHTML=PAD;
+  else d.innerHTML='<span class="year">'+y+"</span>";
+  return d;
+}
+function card(c){
+  const a=document.createElement("article");a.className="card";
+  a.appendChild(art(c.k,c.y));
+  const b=document.createElement("div");b.className="body";
+  const h=document.createElement("h3");h.textContent=c.t;
+  const p=document.createElement("p");p.textContent=c.d;
+  b.append(h,p);
+  if(c.m){
+    const m=document.createElement("p");m.className="more";m.textContent=c.m;m.hidden=true;
+    const btn=document.createElement("button");btn.className="btn";btn.textContent="Read More";btn.setAttribute("aria-expanded","false");
+    btn.onclick=()=>{const o=m.hidden;m.hidden=!o;btn.setAttribute("aria-expanded",o);btn.textContent=o?"Show less":"Read More"};
+    b.append(m,btn);
+  }
+  a.appendChild(b);return a;
+}
+const hist=document.getElementById("hist");
+history.forEach((c,i)=>{const e=card(c);if(i>2)e.hidden=true;hist.appendChild(e)});
+const allBtn=document.getElementById("all");
+allBtn.onclick=()=>{
+  const open=allBtn.getAttribute("aria-expanded")!=="true";
+  [...hist.children].forEach((e,i)=>{if(i>2)e.hidden=!open});
+  allBtn.setAttribute("aria-expanded",open);allBtn.textContent=open?"Show less":"See all";
+};
+const us=document.getElementById("us");usa.forEach(c=>us.appendChild(card(c)));
+
+/* Search */
+const F=["Developer","Publisher","First release","Genre","Platforms","Players","Setting","Franchise","Creator or lead","Fun fact"];
+const D=`Pong|Atari|Atari|1972|Sports|Arcade|1–2|Table tennis|Pong|Allan Alcorn|Began as a training exercise for its engineer.
+Space Invaders|Taito|Taito|1978|Shooter|Arcade|1–2|Space|Space Invaders|Tomohiro Nishikado|Enemies speed up as their numbers shrink.
+Pac-Man|Namco|Namco|1980|Action|Arcade|1–2|Maze|Pac-Man|Toru Iwatani|Each ghost chases you in its own way.
+Donkey Kong|Nintendo|Nintendo|1981|Platformer|Arcade|1–2|Construction site|Donkey Kong|Shigeru Miyamoto|The hero, first called Jumpman, later became Mario.
+Tetris|Alexey Pajitnov|Various|1984|Puzzle|Electronika 60|1|Abstract blocks|Tetris|Alexey Pajitnov|Born in the Soviet Union, made famous by the Game Boy.
+Super Mario Bros.|Nintendo|Nintendo|1985|Platformer|NES|1–2|Mushroom Kingdom|Mario|Shigeru Miyamoto|Sold over 40 million copies.
+The Legend of Zelda|Nintendo|Nintendo|1986|Adventure|Famicom Disk System/NES|1|Hyrule|Zelda|Shigeru Miyamoto|Its cartridge had a battery to save your progress.
+Metroid|Nintendo R&D1|Nintendo|1986|Action|Famicom Disk System/NES|1|Planet Zebes|Metroid|Yoshio Sakamoto|The hero Samus is revealed to be a woman at the end.
+Castlevania|Konami|Konami|1986|Action|Famicom Disk System/NES|1|Dracula’s castle|Castlevania|Hitoshi Akamatsu|Introduced the Belmont family of vampire hunters.
+Final Fantasy|Square|Square|1987|RPG|NES|1|Fantasy world|Final Fantasy|Hironobu Sakaguchi|Its name reflects fears that it might be Square’s last game.
+Super Mario World|Nintendo EAD|Nintendo|1990|Platformer|SNES|1–2|Dinosaur Land|Mario|Takashi Tezuka|Introduced Yoshi.
+Sonic the Hedgehog|Sonic Team|Sega|1991|Platformer|Mega Drive/Genesis|1|Green Hill Zone|Sonic|Yuji Naka|Created to give Sega a mascot to rival Mario.
+Street Fighter II|Capcom|Capcom|1991|Fighting|Arcade|1–2|World tour|Street Fighter|Yoshiki Okamoto|Set off the boom of competitive fighting games.
+Civilization|MicroProse|MicroProse|1991|Strategy|MS-DOS|1|Human history|Civilization|Sid Meier|Guide a nation from the Stone Age to space.
+The Legend of Zelda: A Link to the Past|Nintendo EAD|Nintendo|1991|Adventure|SNES|1|Hyrule and the Dark World|Zelda|Takashi Tezuka|Introduced the parallel Dark World.
+Mortal Kombat|Midway|Midway|1992|Fighting|Arcade|1–2|Tournament|Mortal Kombat|Ed Boon and John Tobias|Its violence helped lead to the ESRB rating system.
+Wolfenstein 3D|id Software|Apogee|1992|Shooter|MS-DOS|1|Nazi fortress|Wolfenstein|John Carmack and John Romero|Popularized the first-person shooter.
+Alone in the Dark|Infogrames|Infogrames|1992|Horror|MS-DOS|1|Derceto mansion|Alone in the Dark|Frédérick Raynal|Seen as a forerunner of survival horror.
+Doom|id Software|id Software|1993|Shooter|MS-DOS|1–4|Mars and Hell|Doom|John Carmack and John Romero|First spread as free shareware.
+Myst|Cyan|Brøderbund|1993|Adventure|Macintosh|1|Mysterious islands|Myst|Rand and Robyn Miller|Among the best-selling PC games of the 1990s.
+NBA Jam|Midway|Midway|1993|Sports|Arcade|1–4|Basketball|NBA Jam|Mark Turmell|Famous for its “He’s on fire!” announcer.
+Super Metroid|Nintendo R&D1|Nintendo|1994|Action|SNES|1|Planet Zebes|Metroid|Yoshio Sakamoto|Helped define the “Metroidvania” style.
+Chrono Trigger|Square|Square|1995|RPG|SNES|1|Time travel|Chrono|Hironobu Sakaguchi and Yuji Horii|Characters drawn by Akira Toriyama.
+Command & Conquer|Westwood Studios|Virgin Interactive|1995|Strategy|MS-DOS|1–2|Global conflict|Command & Conquer|Brett Sperry|Used live-action video briefings.
+Rayman|Ubisoft Montpellier|Ubisoft|1995|Platformer|PlayStation/Jaguar/PC|1|Fantasy world|Rayman|Michel Ancel|A French-made hero with no arms or legs.
+Super Mario 64|Nintendo EAD|Nintendo|1996|Platformer|Nintendo 64|1|Peach’s castle|Mario|Shigeru Miyamoto|Set the standard for 3D movement.
+Resident Evil|Capcom|Capcom|1996|Horror|PlayStation|1|Spencer Mansion|Resident Evil|Shinji Mikami|Made “survival horror” a household term.
+Tomb Raider|Core Design|Eidos Interactive|1996|Adventure|PC/Saturn/PlayStation|1|Ancient ruins|Tomb Raider|Toby Gard|Introduced Lara Croft.
+Pokémon Red and Green|Game Freak|Nintendo|1996|RPG|Game Boy|1–2|Kanto region|Pokémon|Satoshi Tajiri|A link cable lets players trade and battle.
+Quake|id Software|GT Interactive|1996|Shooter|MS-DOS|1–16|Dark fantasy|Quake|John Carmack|Brought full 3D and online play to shooters.
+Crash Bandicoot|Naughty Dog|Sony Computer Entertainment|1996|Platformer|PlayStation|1|Wumpa Islands|Crash Bandicoot|Andy Gavin and Jason Rubin|Became an early PlayStation mascot.
+Final Fantasy VII|Square|Square|1997|RPG|PlayStation|1|The city of Midgar|Final Fantasy|Yoshinori Kitase|Helped bring Japanese RPGs to a worldwide audience.
+GoldenEye 007|Rare|Nintendo|1997|Shooter|Nintendo 64|1–4|Spy missions|James Bond|Martin Hollis|Proved console shooters could work.
+Gran Turismo|Polyphony Digital|Sony Computer Entertainment|1997|Racing|PlayStation|1–2|Real-world cars|Gran Turismo|Kazunori Yamauchi|Cars are modeled on real models.
+Metal Gear Solid|Konami|Konami|1998|Action|PlayStation|1|Alaskan base|Metal Gear|Hideo Kojima|Famous for its cinematic style and boss fights.
+The Legend of Zelda: Ocarina of Time|Nintendo EAD|Nintendo|1998|Adventure|Nintendo 64|1|Hyrule|Zelda|Shigeru Miyamoto|Its lock-on targeting was widely copied.
+Half-Life|Valve|Sierra Studios|1998|Shooter|PC|1|Black Mesa facility|Half-Life|Gabe Newell|Told its story without cut-scenes.
+StarCraft|Blizzard Entertainment|Blizzard Entertainment|1998|Strategy|PC|1–8|Space|StarCraft|Chris Metzen and James Phinney|Became a pillar of esports in South Korea.
+Baldur’s Gate|BioWare|Interplay|1998|RPG|PC|1–6|Forgotten Realms|Baldur’s Gate|Ray Muzyka and Greg Zeschuk|Built on Dungeons & Dragons rules.
+Age of Empires II|Ensemble Studios|Microsoft|1999|Strategy|PC|1–8|Middle Ages|Age of Empires|Ensemble Studios|Still played and updated decades later.
+The Sims|Maxis|Electronic Arts|2000|Simulation|PC|1|Suburban homes|The Sims|Will Wright|One of the best-selling PC franchises.
+Diablo II|Blizzard North|Blizzard Entertainment|2000|RPG|PC|1–8|Gothic fantasy|Diablo|David Brevik|Its loot hunts defined action RPGs.
+Counter-Strike|Valve|Valve|2000|Shooter|PC|Online teams|Counter-terrorism|Counter-Strike|Minh Le and Jess Cliffe|Began as a mod for Half-Life.
+Tony Hawk’s Pro Skater 2|Neversoft|Activision|2000|Sports|PlayStation|1–2|Skate parks|Tony Hawk’s|Neversoft team|Remade in 2020 in a collection with the first game.
+Grand Theft Auto III|DMA Design|Rockstar Games|2001|Action|PlayStation 2|1|Liberty City|Grand Theft Auto|Dan Houser|Brought open-world crime games into 3D.
+Halo: Combat Evolved|Bungie|Microsoft Game Studios|2001|Shooter|Xbox|1–4|Halo ring|Halo|Jason Jones|The signature launch game of the Xbox.
+Super Smash Bros. Melee|HAL Laboratory|Nintendo|2001|Fighting|GameCube|1–4|Nintendo crossover|Super Smash Bros.|Masahiro Sakurai|Still played in tournaments today.
+Silent Hill 2|Team Silent|Konami|2001|Horror|PlayStation 2|1|Silent Hill town|Silent Hill|Masashi Tsuboyama|Praised for its psychological horror.
+Kingdom Hearts|Square|Square|2002|RPG|PlayStation 2|1|Disney worlds|Kingdom Hearts|Tetsuya Nomura|Mixes Disney and Final Fantasy characters.
+Prince of Persia: The Sands of Time|Ubisoft Montreal|Ubisoft|2003|Action|PS2/Xbox/GameCube/PC|1|Persian palace|Prince of Persia|Jordan Mechner|Lets you rewind time after a mistake.
+Beyond Good & Evil|Ubisoft Montpellier|Ubisoft|2003|Adventure|PS2/Xbox/GameCube/PC|1|Planet Hillys|Beyond Good & Evil|Michel Ancel|A cult classic made in France.
+World of Warcraft|Blizzard Entertainment|Blizzard Entertainment|2004|RPG|PC|Online (MMO)|Azeroth|Warcraft|Rob Pardo|Peaked at over 12 million subscribers.
+Half-Life 2|Valve|Valve|2004|Shooter|PC|1|City 17|Half-Life|Gabe Newell|Launched with the Source engine and Steam.
+Shadow of the Colossus|Team Ico|Sony Computer Entertainment|2005|Adventure|PlayStation 2|1|Forbidden land|Ico|Fumito Ueda|Built around just sixteen giant bosses.
+Resident Evil 4|Capcom|Capcom|2005|Horror|GameCube|1|Rural Spain|Resident Evil|Shinji Mikami|Its over-the-shoulder camera influenced many shooters.
+Wii Sports|Nintendo EAD|Nintendo|2006|Sports|Wii|1–4|Virtual arenas|Wii|Katsuya Eguchi|Came bundled with the Wii console.
+Portal|Valve|Valve|2007|Puzzle|PC|1|Aperture Science labs|Portal|Kim Swift|Grew out of a student project called Narbacular Drop.
+BioShock|2K Boston|2K Games|2007|Shooter|PC/Xbox 360|1|Underwater city of Rapture|BioShock|Ken Levine|Its city of Rapture is a signature setting.
+Call of Duty 4: Modern Warfare|Infinity Ward|Activision|2007|Shooter|PC/Xbox 360/PS3|1–18|Modern conflict|Call of Duty|Infinity Ward|Popularized perks and ranks in online play.
+Super Mario Galaxy|Nintendo EAD Tokyo|Nintendo|2007|Platformer|Wii|1–2|Outer space|Mario|Yoshiaki Koizumi|Gravity shifts as you run around tiny planets.
+Assassin’s Creed|Ubisoft Montreal|Ubisoft|2007|Action|PS3/Xbox 360/PC|1|Third Crusade|Assassin’s Creed|Patrice Désilets|The series later visited many historical eras.
+Fallout 3|Bethesda Game Studios|Bethesda Softworks|2008|RPG|PC/Xbox 360/PS3|1|Ruined Washington, D.C.|Fallout|Todd Howard|Moved the series to first-person 3D.
+League of Legends|Riot Games|Riot Games|2009|Strategy|PC|10|Runeterra|League of Legends|Brandon Beck and Marc Merrill|One of the biggest esports titles.
+Batman: Arkham Asylum|Rocksteady Studios|Eidos Interactive|2009|Action|PS3/Xbox 360/PC|1|Arkham Asylum|Batman: Arkham|Sefton Hill|Praised as a landmark superhero game.
+Mass Effect 2|BioWare|Electronic Arts|2010|RPG|PC/Xbox 360|1|Milky Way|Mass Effect|Casey Hudson|Your choices carry over from the first game.
+Red Dead Redemption|Rockstar San Diego|Rockstar Games|2010|Action|PS3/Xbox 360|1|American frontier|Red Dead|Rockstar San Diego|Set in the fading Wild West of 1911.
+Limbo|Playdead|Playdead|2010|Platformer|Xbox 360|1|Dark forest|Limbo|Arnt Jensen|Its black-and-white look inspired many indie games.
+Minecraft|Mojang|Mojang|2011|Sandbox|PC|Solo or online|Procedural blocky worlds|Minecraft|Markus Persson|Became one of the best-selling games ever.
+The Elder Scrolls V: Skyrim|Bethesda Game Studios|Bethesda Softworks|2011|RPG|PC/Xbox 360/PS3|1|Skyrim province|The Elder Scrolls|Todd Howard|Re-released on many platforms over the years.
+Portal 2|Valve|Valve|2011|Puzzle|PC/Xbox 360/PS3|1–2|Aperture Science labs|Portal|Valve team|Adds a two-player co-op campaign.
+Dark Souls|FromSoftware|Namco Bandai|2011|RPG|Xbox 360/PS3|1|Lordran|Souls|Hidetaka Miyazaki|Known for its demanding combat.
+Terraria|Re-Logic|Re-Logic|2011|Sandbox|PC|1–8|2D worlds|Terraria|Andrew Spinks|Digging, building and fighting in two dimensions.
+Journey|thatgamecompany|Sony Computer Entertainment|2012|Adventure|PlayStation 3|1–2|Desert|Journey|Jenova Chen|You meet anonymous companions along the way.
+Grand Theft Auto V|Rockstar North|Rockstar Games|2013|Action|PS3/Xbox 360|1–30|Los Santos|Grand Theft Auto|Rockstar North|One of the best-selling games of all time.
+The Last of Us|Naughty Dog|Sony Computer Entertainment|2013|Action|PlayStation 3|1–8|Post-pandemic America|The Last of Us|Neil Druckmann and Bruce Straley|Won wide praise for its characters and story.
+Dota 2|Valve|Valve|2013|Strategy|PC|10|Fantasy battlefield|Dota|Icefrog|Hosts The International with record prize pools.
+The Witcher 3: Wild Hunt|CD Projekt Red|CD Projekt|2015|RPG|PC/PS4/Xbox One|1|Northern Kingdoms|The Witcher|Konrad Tomaszkiewicz|Based on novels by Andrzej Sapkowski.
+Undertale|Toby Fox|Toby Fox|2015|RPG|PC|1|Underground world|Undertale|Toby Fox|Made almost entirely by one person.
+Rocket League|Psyonix|Psyonix|2015|Sports|PC/PS4|1–8|Arena|Rocket League|Psyonix team|Plays like soccer with rocket-powered cars.
+Stardew Valley|ConcernedApe|ConcernedApe|2016|Simulation|PC|1–4|Pelican Town farm|Stardew Valley|Eric Barone|Built mostly by one developer.
+Overwatch|Blizzard Entertainment|Blizzard Entertainment|2016|Shooter|PC/consoles|12|Near-future Earth|Overwatch|Jeff Kaplan|A team-based hero shooter.
+The Legend of Zelda: Breath of the Wild|Nintendo EPD|Nintendo|2017|Adventure|Switch/Wii U|1|Hyrule|Zelda|Hidemaro Fujibayashi|Launched alongside the Nintendo Switch.
+Super Mario Odyssey|Nintendo EPD|Nintendo|2017|Platformer|Switch|1–2|Many kingdoms|Mario|Kenta Motokura|Mario can take control of enemies with his hat.
+Mario Kart 8 Deluxe|Nintendo EPD|Nintendo|2017|Racing|Switch|1–8|Mushroom Kingdom tracks|Mario Kart|Kosuke Yabuki|An enhanced version of the 2014 Wii U game.
+Hollow Knight|Team Cherry|Team Cherry|2017|Action|PC|1|Hallownest|Hollow Knight|Ari Gibson and William Pellen|Made by a small studio in Australia.
+Fortnite|Epic Games|Epic Games|2017|Shooter|PC/consoles|1–100|Island|Fortnite|Epic Games|Its battle royale mode is free to play.
+Celeste|Maddy Makes Games|Maddy Makes Games|2018|Platformer|PC/Switch|1|Celeste Mountain|Celeste|Maddy Thorson|Includes an assist mode to adjust difficulty.
+God of War|Santa Monica Studio|Sony Interactive Entertainment|2018|Action|PlayStation 4|1|Norse realms|God of War|Cory Barlog|Presented as one continuous camera shot.
+Red Dead Redemption 2|Rockstar Games|Rockstar Games|2018|Action|PS4/Xbox One|1|America in 1899|Red Dead|Rockstar Games|Prequel to the first Red Dead Redemption.
+Disco Elysium|ZA/UM|ZA/UM|2019|RPG|PC|1|City of Revachol|Disco Elysium|Robert Kurvitz|Has no combat; your skills argue in your head.
+Sekiro: Shadows Die Twice|FromSoftware|Activision|2019|Action|PC/PS4/Xbox One|1|Sengoku-era Japan|Sekiro|Hidetaka Miyazaki|Swaps character levels for a posture system.
+Death Stranding|Kojima Productions|Sony Interactive Entertainment|2019|Adventure|PlayStation 4|1|Post-apocalyptic America|Death Stranding|Hideo Kojima|A delivery game with asynchronous online features.
+Animal Crossing: New Horizons|Nintendo EPD|Nintendo|2020|Simulation|Switch|1–8|Deserted island|Animal Crossing|Aya Kyogoku|Became a pandemic-era hit in 2020.
+Hades|Supergiant Games|Supergiant Games|2020|Action|PC/Switch|1|Greek underworld|Hades|Greg Kasavin|The story moves forward with every failed run.
+Cyberpunk 2077|CD Projekt Red|CD Projekt|2020|RPG|PC/PS4/Xbox One|1|Night City|Cyberpunk|Adam Badowski|Based on Mike Pondsmith’s tabletop game.
+Forza Horizon 5|Playground Games|Xbox Game Studios|2021|Racing|PC/Xbox|1–72|Mexico|Forza Horizon|Playground Games|An open-world festival set in Mexico.
+Elden Ring|FromSoftware|Bandai Namco|2022|RPG|PC/PS/Xbox|1–4|The Lands Between|Souls|Hidetaka Miyazaki|Worldbuilding by author George R. R. Martin.
+Baldur’s Gate 3|Larian Studios|Larian Studios|2023|RPG|PC/PS5|1–4|Forgotten Realms|Baldur’s Gate|Swen Vincke|Built on Dungeons & Dragons rules.
+The Legend of Zelda: Tears of the Kingdom|Nintendo EPD|Nintendo|2023|Adventure|Switch|1|Hyrule and its skies|Zelda|Hidemaro Fujibayashi|Lets you build vehicles and devices.
+Clair Obscur: Expedition 33|Sandfall Interactive|Kepler Interactive|2025|RPG|PC/PS5/Xbox Series|1|Belle Époque-inspired world|Standalone|Guillaume Broche|A French studio’s turn-based RPG with real-time dodging.`;
+const games=D.trim().split("\n").map(l=>{const p=l.split("|");return{t:p[0],f:p.slice(1)}}).sort((a,b)=>a.f[2]-b.f[2]);
+const genres=["All",...[...new Set(games.map(g=>g.f[3]))].sort()];
+let genre="All";
+const q=document.getElementById("q"),res=document.getElementById("results"),cnt=document.getElementById("count"),empty=document.getElementById("empty"),chips=document.querySelector(".chips");
+genres.forEach(g=>{
+  const b=document.createElement("button");b.className="chip";b.textContent=g;b.setAttribute("aria-pressed",g==="All");
+  b.onclick=()=>{genre=g;chips.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));render()};
+  chips.appendChild(b);
+});
+function render(){
+  const s=q.value.trim().toLowerCase();
+  const list=games.filter(g=>(genre==="All"||g.f[3]===genre)&&(!s||(g.t+" "+g.f.join(" ")).toLowerCase().includes(s)));
+  res.textContent="";
+  list.forEach(g=>{
+    const d=document.createElement("details");d.className="game";
+    const sm=document.createElement("summary"),b=document.createElement("b"),sp=document.createElement("span");
+    b.textContent=g.t;sp.textContent=g.f[3]+" · "+g.f[2];sm.append(b,sp);
+    const dl=document.createElement("dl");
+    F.forEach((k,i)=>{const r=document.createElement("div"),dt=document.createElement("dt"),dd=document.createElement("dd");dt.textContent=k;dd.textContent=g.f[i];r.append(dt,dd);dl.appendChild(r)});
+    d.append(sm,dl);res.appendChild(d);
+  });
+  cnt.textContent=list.length+(list.length===1?" game":" games")+" · tap a game for its 10-line sheet";
+  empty.hidden=list.length>0;
+}
+q.addEventListener("input",render);render();
+
+/* Theme */
+const mq=matchMedia("(prefers-color-scheme:dark)"),root=document.documentElement;
+document.getElementById("theme").onclick=()=>{
+  const dark=root.dataset.theme?root.dataset.theme==="dark":mq.matches;
+  root.dataset.theme=dark?"light":"dark";
+};
+
+/* Pong */
 (function(){
   const c=document.getElementById("pong"),x=c.getContext("2d"),W=c.width,H=c.height;
-  let bx=W/2,by=H/2,vx=3,vy=2,l=H/2,r=H/2;const ph=44;
-  const still=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  let bx=W/2,by=H/2,vx=3.2,vy=2.2,l=H/2,r=H/2,rally=0,run=true,going=false,vis=true;const ph=56;
   function draw(){
-    x.fillStyle="#14112e";x.fillRect(0,0,W,H);
-    x.fillStyle="#6b66a8";for(let y=0;y<H;y+=16)x.fillRect(W/2-2,y,4,8);
-    x.fillStyle="#ff5c95";x.fillRect(16,l-ph/2,8,ph);
-    x.fillStyle="#27e0d0";x.fillRect(W-24,r-ph/2,8,ph);
-    x.fillStyle="#ffd23f";x.fillRect(bx-5,by-5,10,10);
+    x.fillStyle="#0a0720";x.fillRect(0,0,W,H);
+    x.fillStyle="#3b3480";for(let y=0;y<H;y+=16)x.fillRect(W/2-2,y,4,8);
+    x.fillStyle="#ff4fa3";x.fillRect(16,l-ph/2,8,ph);
+    x.fillStyle="#2ef2e0";x.fillRect(W-24,r-ph/2,8,ph);
+    x.fillStyle="#ffe14d";x.fillRect(bx-6,by-6,12,12);
+    x.fillStyle="#8466ff";x.font="14px monospace";x.fillText("RALLY "+String(rally).padStart(3,"0"),W/2-42,22);
   }
   function step(){
     bx+=vx;by+=vy;
-    if(by<5||by>H-5)vy=-vy;
+    if(by<6||by>H-6)vy=-vy;
     l+=(by-l)*.12;r+=(by-r)*.12;
-    if(bx<28||bx>W-28)vx=-vx;
+    if(bx<30||bx>W-30){vx=-vx;rally++}
     draw();
-    if(!still)requestAnimationFrame(step);
+    if(!reduce&&run)requestAnimationFrame(step);else going=false;
   }
-  step();
+  function upd(){run=vis&&!document.hidden;if(run&&!going&&!reduce){going=true;requestAnimationFrame(step)}}
+  step();going=!reduce;
+  if("IntersectionObserver" in window)new IntersectionObserver(es=>{vis=es[0].isIntersecting;upd()}).observe(c);
+  document.addEventListener("visibilitychange",upd);
 })();
 </script>
 </body>
