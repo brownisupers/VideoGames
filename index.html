@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GameCore: video game history, icons and search</title>
+<meta name="description" content="Video game history highlights, American icons and a searchable list of classic games.">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Manrope:wght@400;500;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f1eee6;--surface:#fbfaf6;--ink:#121212;--mut:#5d5b55;--line:rgba(18,18,18,.14);
+  --acc:#c8ff3a;--on:#121212;--hi:#3d5200;--glow:rgba(110,150,0,.22);color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c0c0e;--surface:#151518;--ink:#f3f1ea;--mut:#9d9a92;--line:rgba(243,241,234,.14);
+    --hi:#c8ff3a;--glow:rgba(200,255,58,.2);color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c0c0e;--surface:#151518;--ink:#f3f1ea;--mut:#9d9a92;--line:rgba(243,241,234,.14);
+  --hi:#c8ff3a;--glow:rgba(200,255,58,.2);color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth;scroll-padding-top:6rem}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 1.05rem/1.65 Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(60rem 34rem at 92% -8%,var(--glow),transparent 60%),radial-gradient(46rem 28rem at -8% 45%,rgba(255,90,54,.1),transparent 60%)}
+h1,h2,h3,.logo,.mark{font-family:Syne,"Trebuchet MS",sans-serif;margin:0}
+:focus-visible{outline:3px solid var(--hi);outline-offset:3px}
+.wrap{max-width:72rem;margin:0 auto;padding:0 1.5rem}
+section{padding:4.5rem 0}
+
+/* Floating pill nav */
+.nav{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);left:0;right:0;z-index:30;display:flex;justify-content:center;padding:0 .8rem;pointer-events:none}
+.pill{pointer-events:auto;display:flex;align-items:center;gap:.4rem;padding:.4rem .45rem .4rem 1.2rem;border:1px solid var(--line);border-radius:999px;
+  background:color-mix(in srgb,var(--bg) 72%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
+.logo{font-weight:800;font-size:1.2rem;color:var(--ink);text-decoration:none;margin-right:.8rem;letter-spacing:-.02em}
+.logo i{color:var(--hi);font-style:normal}
+nav{display:flex;gap:.1rem}
+nav a{font:500 .9rem Manrope,sans-serif;color:var(--ink);text-decoration:none;padding:.5rem .9rem;border-radius:999px}
+nav a:hover{background:var(--line)}
+#theme{width:2.4rem;height:2.4rem;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink);cursor:pointer;font-size:1rem}
+@media (max-width:40rem){nav{display:none}.logo{margin-right:.4rem}}
+
+/* Hero */
+.hero{padding:8rem 0 0}
+.kicker{font:500 .8rem "JetBrains Mono",monospace;color:var(--hi);margin:0 0 1.2rem;letter-spacing:.04em}
+h1{font-weight:800;font-size:clamp(3.8rem,14vw,9rem);line-height:.88;letter-spacing:-.04em;margin:0 0 2.4rem}
+h1 span{display:block}
+h1 .out{color:transparent;-webkit-text-stroke:2px var(--ink)}
+.bento{display:grid;gap:14px;grid-template-columns:repeat(6,1fr)}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:1.7rem}
+.tile.big{grid-column:span 3;grid-row:span 2;display:flex;flex-direction:column;justify-content:space-between;gap:1.5rem}
+.tile.big p{font-size:1.2rem;margin:0;max-width:26rem}
+.tile.crt{grid-column:span 3;grid-row:span 2;padding:0;overflow:hidden;background:#0a0a0c;position:relative;min-height:15rem}
+.tile.crt canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.tile.crt::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px)}
+.tile.stat{grid-column:span 2;display:flex;flex-direction:column;gap:.2rem}
+.tile.stat b{font:800 clamp(2.2rem,5vw,3.8rem)/1 Syne,sans-serif;letter-spacing:-.03em}
+.tile.stat span{color:var(--mut);font-size:.95rem}
+.tile.acc{background:var(--acc);border-color:var(--acc);color:var(--on)}.tile.acc span{color:var(--on)}
+@media (max-width:48rem){.tile.big,.tile.crt{grid-column:span 6;grid-row:auto}.tile.stat{grid-column:span 2;padding:1.1rem}}
+.marquee{overflow:hidden;margin-top:4rem;background:var(--acc);color:var(--on);padding:.9rem 0;transform:rotate(-1.2deg) scale(1.03)}
+.track{display:flex;gap:2.2rem;width:max-content;font:800 1.5rem Syne,sans-serif;text-transform:uppercase;white-space:nowrap;animation:mq 32s linear infinite}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+.btns{display:flex;gap:.7rem;flex-wrap:wrap}
+.btn{display:inline-block;font:700 .95rem Manrope,sans-serif;background:var(--acc);color:var(--on);border:1px solid var(--acc);border-radius:999px;padding:.8rem 1.4rem;text-decoration:none;cursor:pointer}
+.btn.alt{background:transparent;color:var(--ink);border-color:var(--line)}
+
+/* Section heads */
+.head{display:flex;align-items:flex-end;gap:1rem 1.4rem;flex-wrap:wrap;margin-bottom:2.2rem}
+.num{font:500 .85rem "JetBrains Mono",monospace;color:var(--hi);padding-bottom:.9rem}
+h2{font-weight:800;font-size:clamp(2rem,6vw,4.2rem);line-height:1;letter-spacing:-.03em}
+.head .btn{margin-left:auto}
+
+/* Cards */
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(17rem,1fr));align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.card[hidden]{display:none}
+.card .body{padding:1.2rem 1.4rem 1.5rem;display:flex;flex-direction:column;gap:.6rem;flex:1}
+.card h3{font-size:1.3rem;line-height:1.15;letter-spacing:-.02em}
+.card p{margin:0;color:var(--mut)}
+.card .meta{font:500 .8rem "JetBrains Mono",monospace;color:var(--hi)}
+.hlt{font:inherit;color:inherit;background:none;border:0;padding:0;text-align:left;cursor:pointer}
+.card.hl{cursor:pointer}
+.card.hl .exp{display:none;flex-direction:column;gap:.9rem}.card.hl.open .exp{display:flex}
+.card .btn{align-self:flex-start}
+.art{height:10rem;position:relative;display:grid;place-items:center;overflow:hidden}
+.a-pong{background:linear-gradient(135deg,#1b0b3a,#4a1170 60%,#c2185b)}
+.a-pong i{position:absolute;background:#fff;box-shadow:0 0 14px #fff}
+.a-pong i:nth-child(1){left:12%;top:30%;width:10px;height:56px;background:#ff4fa3;box-shadow:0 0 14px #ff4fa3}
+.a-pong i:nth-child(2){right:12%;top:52%;width:10px;height:56px;background:#2ef2e0;box-shadow:0 0 14px #2ef2e0}
+.a-pong i:nth-child(3){left:52%;top:42%;width:14px;height:14px;background:#ffe14d;box-shadow:0 0 16px #ffe14d}
+.a-sign{background:linear-gradient(180deg,#26255e,#6a2c91 55%,#12b5c9)}
+.sign{font:800 2.2rem Syne,sans-serif;color:#ffe14d;background:#2a0610;border:4px solid #ff2d55;border-radius:14px;padding:.4rem 1.2rem;text-shadow:0 0 14px #ff9d00;box-shadow:0 0 22px #ff2d55}
+.a-pad{background:linear-gradient(135deg,#0d1b4a,#3c1d8f 60%,#ff4fa3)}
+.a-year{background:linear-gradient(135deg,#0a1f2e,#14456b 60%,#2b2c8f)}
+.year{font:800 2.6rem Syne,sans-serif;color:#2ef2e0;text-shadow:0 0 16px #2ef2e0}
+
+/* Search */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:30px;padding:clamp(1.2rem,3vw,2.2rem)}
+.panel label{display:block;font:700 1.2rem Syne,sans-serif;margin-bottom:.8rem}
+#q{width:100%;font:500 1.1rem Manrope,sans-serif;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:1rem 1.4rem}
+#q:focus{border-color:var(--hi)}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.1rem 0 .4rem}
+.chip{font:500 .9rem Manrope,sans-serif;color:var(--ink);background:none;border:1px solid var(--line);border-radius:999px;padding:.4rem 1rem;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--on)}
+#count{color:var(--mut);margin:.8rem 0 1rem;font:500 .85rem "JetBrains Mono",monospace}
+#results{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));align-items:start}
+.game{border:1px solid var(--line);border-radius:18px;padding:1rem 1.2rem;background:var(--bg);position:relative}
+.game summary{cursor:pointer;list-style:none}.game summary::-webkit-details-marker{display:none}
+.game summary b{display:block;font:700 1.05rem/1.3 Syne,sans-serif}
+.game summary span{color:var(--mut);font-size:.9rem}
+.game[open]{border-color:var(--hi)}
+.game p{margin:.6rem 0 0;font-size:.92rem}
+.game .btn{margin-top:.8rem;font-size:.85rem;padding:.55rem 1.1rem}
+#empty{color:var(--mut)}
+
+/* Detail pages */
+.article{max-width:46rem;padding-top:7.5rem;padding-bottom:4rem}
+.article .yr{font:800 clamp(3.5rem,14vw,7rem)/1 Syne,sans-serif;color:transparent;-webkit-text-stroke:2px var(--hi);margin:1.8rem 0 .4rem;letter-spacing:-.04em}
+.article h2{font-size:clamp(2rem,6vw,3.4rem)}
+.article .lead{color:var(--mut);font-size:1.2rem;margin:1rem 0 0}
+.article h3{margin:2rem 0 .5rem;font-size:1.1rem;color:var(--hi)}
+.article p{margin:.6rem 0}
+.nav2{display:flex;gap:1rem;margin-top:2.5rem}
+
+footer{border-top:1px solid var(--line);padding:3rem 0 2.5rem;color:var(--mut);font-size:.95rem;overflow:hidden}
+.mark{font-weight:800;font-size:clamp(3.2rem,19vw,15rem);line-height:.82;color:transparent;-webkit-text-stroke:1.5px var(--line);letter-spacing:-.04em;margin:0 0 1.5rem}
+
+/* Motion */
+.js .rv{opacity:0;transform:translateY(28px)}
+.rv{transition:opacity .7s ease,transform .6s cubic-bezier(.2,.7,.2,1),box-shadow .3s ease,border-color .3s ease}
+.js .rv.in{opacity:1;transform:none}
+@media (hover:hover){
+.card::after,.game::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .25s;border-radius:inherit;background:radial-gradient(16rem circle at var(--mx,50%) var(--my,50%),var(--glow),transparent 65%)}
+.card:hover,.game:hover{border-color:var(--hi);box-shadow:0 18px 40px var(--glow)}
+.js .card.rv.in:hover{transform:translateY(-6px)}
+.card:hover::after,.game:hover::after{opacity:1}
+.art{transition:transform .5s ease}.card:hover .art{transform:scale(1.07)}
+.btn{transition:transform .2s ease,box-shadow .2s ease}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--glow)}
+}
+@media (prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}.track{animation:none}.marquee{transform:none}
+.js .rv{opacity:1;transform:none;transition:none}.art,.btn,.card::after,.game::after{transition:none}
+.js .card.rv.in:hover,.card:hover .art,.btn:hover{transform:none}
+}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="pill">
+    <a class="logo" href="#home">GameCore<i>.</i></a>
+    <nav aria-label="Main"><a href="#history">History</a><a href="#usa">Made in USA</a><a href="#search">Search</a></nav>
+    <button id="theme" aria-label="Switch light and dark theme">◐</button>
+  </div>
+</header>
+<div id="detail" hidden></div>
+<main id="mainview">
+<section id="home" class="hero">
+  <div class="wrap">
+    <p class="kicker">VIDEO GAME HISTORY / 1958 — 2025</p>
+    <h1><span>Play</span><span class="out">through</span><span>history.</span></h1>
+    <div class="bento">
+      <div class="tile big">
+        <p>Browse the milestones, meet the American icons and search 150 games, each with its own page.</p>
+        <div class="btns"><a class="btn" href="#history">See highlights</a><a class="btn alt" href="#search">Search games</a></div>
+      </div>
+      <div class="tile crt" aria-hidden="true"><canvas id="pong" width="480" height="300"></canvas></div>
+      <div class="tile stat"><b>150</b><span>games with full pages</span></div>
+      <div class="tile stat acc"><b>27</b><span>milestones to unlock</span></div>
+      <div class="tile stat"><b>67</b><span>years of play</span></div>
+    </div>
+  </div>
+  <div class="marquee" aria-hidden="true"><div class="track">
+    <span>Pong 1972 ✦ Pac-Man 1980 ✦ Super Mario Bros. 1985 ✦ Tetris 1984 ✦ PlayStation 1994 ✦ Minecraft 2011 ✦ Switch 2017 ✦</span>
+    <span>Pong 1972 ✦ Pac-Man 1980 ✦ Super Mario Bros. 1985 ✦ Tetris 1984 ✦ PlayStation 1994 ✦ Minecraft 2011 ✦ Switch 2017 ✦</span>
+  </div></div>
+</section>
+
+<section id="history">
+  <div class="wrap">
+    <div class="head"><span class="num">01</span><h2>Game History<br>Highlights</h2><button class="btn" id="all" aria-expanded="false">See all</button></div>
+    <div class="grid" id="hist"></div>
+  </div>
+</section>
+
+<section id="usa">
+  <div class="wrap">
+    <div class="head"><span class="num">02</span><h2>Made in<br>the USA</h2></div>
+    <div class="grid" id="us"></div>
+  </div>
+</section>
+
+<section id="search">
+  <div class="wrap">
+    <div class="head"><span class="num">03</span><h2>Search<br>Games</h2></div>
+    <div class="panel">
+      <label for="q">Search by title, genre, studio or year</label>
+      <input id="q" type="search" placeholder="Try “Zelda”, “Nintendo” or “1993”" autocomplete="off">
+      <div class="chips" role="group" aria-label="Filter by genre"></div>
+      <p id="count" aria-live="polite"></p>
+      <div id="results"></div>
+      <p id="empty" hidden>No game found. Try another title, or pick a genre such as RPG or Puzzle.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><p class="mark" aria-hidden="true">GameCore</p>GameCore is an introductory page. Dates are those of first releases.</div></footer>
+<noscript><p class="wrap">This page needs JavaScript to show its content.</p></noscript>
+
+<script>
+const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+const PAD='<svg viewBox="0 0 200 120" width="62%" role="img" aria-label="Game controller"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4fc3ff"/><stop offset="1" stop-color="#a24bff"/></linearGradient></defs><path d="M50 30h100c20 0 32 20 38 50l4 20c2 12-12 18-22 8l-18-18H48L30 108c-10 10-24 4-22-8l4-20c6-30 18-50 38-50z" fill="#0b0b22" stroke="url(#g)" stroke-width="4"/><path d="M62 48v10H52v8h10v10h8V66h10v-8H70V48z" fill="url(#g)"/><circle cx="138" cy="52" r="6" fill="#ff4fa3"/><circle cx="154" cy="64" r="6" fill="#2ef2e0"/><circle cx="122" cy="64" r="6" fill="#ffe14d"/><circle cx="138" cy="76" r="6" fill="#7dff6b"/></svg>';
+
+const history=[
+ {y:"1958",k:"year",t:"Tennis for Two",d:"Physicist William Higinbotham builds a tennis game shown on an oscilloscope.",m:"It ran on an analog computer and was shown to visitors at Brookhaven National Laboratory."},
+ {y:"1972",k:"pong",t:"Pong",d:"Atari releases Pong. Two paddles, one ball: arcades move into bars and pizza parlors.",m:"Pong began as a training exercise for Atari engineer Allan Alcorn."},
+ {y:"1985",k:"sign",t:"Super Mario Bros.",d:"On the NES, Nintendo revives the market after the 1983 crash.",m:"It sold more than 40 million copies, a record that stood for decades."},
+ {y:"1994",k:"pad",t:"PlayStation",d:"Sony joins the race with 3D games on CD, reaching an older audience.",m:"The original console launched in Japan in December 1994."},
+ {y:"2007",k:"year",t:"The smartphone",d:"With the iPhone, games fit in your pocket and reach people who never thought of themselves as “gamers.”",m:"The first iPhone launched in June 2007. The App Store followed in 2008."},
+ {y:"2011",k:"year",t:"Minecraft",d:"Mojang’s building game becomes one of the best-selling games of all time.",m:"Its full release came in November 2011, after years in public beta."},
+ {y:"2017",k:"year",t:"Nintendo Switch",d:"A console you can play on the couch or on the go. Fortnite also popularizes free-to-play seasons.",m:"The Switch launched in March 2017."}
+];
+history.push(
+ {y:"1962",k:"year",t:"Spacewar!",d:"MIT students create a two-player space duel on a PDP-1 computer.",m:"Steve Russell led the project, and the game spread to university computers across the United States."},
+ {y:"1971",k:"year",t:"Computer Space",d:"Nolan Bushnell and Ted Dabney make the first commercially sold arcade video game.",m:"The two later founded Atari."},
+ {y:"1972",k:"year",t:"Magnavox Odyssey",d:"The first home video game console reaches living rooms.",m:"It was designed by Ralph Baer, often called the father of video games."},
+ {y:"1977",k:"year",t:"Atari 2600",d:"Atari’s console brings swappable game cartridges to millions of homes.",m:"It launched in 1977 as the Atari Video Computer System."},
+ {y:"1978",k:"year",t:"Space Invaders",d:"Taito’s alien shooter becomes a phenomenon in arcades around the world.",m:"It was designed by Tomohiro Nishikado."},
+ {y:"1980",k:"sign",t:"Pac-Man",d:"Namco’s maze game gives video games their first true mascot.",m:"Designer Toru Iwatani wanted a game that would appeal to a wide audience."},
+ {y:"1981",k:"sign",t:"Donkey Kong",d:"Shigeru Miyamoto’s first hit introduces the hero who will become Mario.",m:"The hero was first called Jumpman."},
+ {y:"1983",k:"year",t:"The video game crash",d:"Too many weak games and consoles make the North American market collapse.",m:"Nintendo’s Famicom had launched in Japan the same year and later helped the market recover."},
+ {y:"1984",k:"sign",t:"Tetris",d:"Alexey Pajitnov creates a falling-block puzzle in the Soviet Union.",m:"It became a worldwide hit after its Game Boy version in 1989."},
+ {y:"1989",k:"year",t:"Game Boy",d:"Nintendo’s handheld proves that games can be played anywhere.",m:"It came bundled with Tetris in many regions."},
+ {y:"1991",k:"year",t:"Sonic the Hedgehog",d:"Sega gets a fast, cool mascot to rival Mario.",m:"The game launched on the Mega Drive/Genesis."},
+ {y:"1993",k:"year",t:"Doom",d:"id Software’s shooter spreads as shareware and defines first-person action.",m:"It also helped popularize online multiplayer and user-made mods."},
+ {y:"1996",k:"year",t:"Pokémon",d:"Pokémon Red and Green launch on the Game Boy in Japan.",m:"The games encourage players to trade creatures with friends using a link cable."},
+ {y:"1998",k:"year",t:"Ocarina of Time",d:"Nintendo’s first 3D Zelda is hailed as a masterpiece and sets standards for adventure games.",m:"Its lock-on targeting system was widely copied."},
+ {y:"2000",k:"pad",t:"PlayStation 2",d:"Sony’s follow-up console becomes the best-selling game console ever.",m:"It sold more than 150 million units."},
+ {y:"2001",k:"pad",t:"Xbox",d:"Microsoft enters the console market, with Halo as its launch star.",m:"The Xbox launched in North America in November 2001."},
+ {y:"2004",k:"year",t:"World of Warcraft",d:"Blizzard’s online world turns massive multiplayer games into a mainstream hobby.",m:"It reached over 12 million subscribers at its peak."},
+ {y:"2006",k:"year",t:"Wii",d:"Nintendo’s motion controls bring families and non-gamers to the console.",m:"Wii Sports came bundled with the console in most regions."},
+ {y:"2008",k:"year",t:"App Store",d:"Apple opens its App Store, and mobile games become a huge business.",m:"It opened in July 2008, a year after the first iPhone."},
+ {y:"2013",k:"pad",t:"PS4 and Xbox One",d:"A new console generation launches with online play, streaming and sharing built in.",m:"Both consoles arrived in November 2013."}
+);
+history.forEach(c=>{c.top=["Pong","Super Mario Bros.","PlayStation"].includes(c.t)});
+const usa=[
+ {y:"1993",k:"year",t:"Doom",d:"Made in Texas by id Software, it helped make the first-person shooter a mainstream genre."},
+ {y:"2004",k:"year",t:"World of Warcraft",d:"Blizzard Entertainment’s online role-playing world, where millions of players adventure together."},
+ {y:"2013",k:"year",t:"The Last of Us",d:"A story-driven action game from Naughty Dog, praised for its characters and writing."}
+];
+const slug=t=>t.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+function art(k,y){
+  const d=document.createElement("div");d.className="art a-"+k;d.setAttribute("aria-hidden","true");
+  if(k==="pong")d.innerHTML="<i></i><i></i><i></i>";
+  else if(k==="sign")d.innerHTML='<span class="sign">'+y+"</span>";
+  else if(k==="pad")d.innerHTML=PAD;
+  else d.innerHTML='<span class="year">'+y+"</span>";
+  return d;
+}
+function card(c){
+  const a=document.createElement("article");a.className="card"+(c.m?" hl":"");
+  a.appendChild(art(c.k,c.y));
+  const b=document.createElement("div");b.className="body";
+  const h=document.createElement("h3");
+  if(c.m){
+    const t=document.createElement("button");t.className="hlt";t.textContent=c.t;t.setAttribute("aria-expanded","false");h.appendChild(t);
+    const y=document.createElement("p");y.className="meta";y.textContent=c.y;
+    const x=document.createElement("div");x.className="exp";
+    const ol=document.createElement("p"),r=document.createElement("a");ol.className="sum";
+    r.className="btn";r.textContent="Read More";r.href="#h-"+slug(c.t);
+    a.item=c;x.append(ol,r);b.append(h,y,x);
+  }else{
+    h.textContent=c.t;const p=document.createElement("p");p.textContent=c.d;b.append(h,p);
+  }
+  a.appendChild(b);return a;
+}
+const hist=document.getElementById("hist");
+history.sort((a,b)=>a.y-b.y);
+history.forEach(c=>{const e=card(c);if(!c.top)e.hidden=true;hist.appendChild(e)});
+const allBtn=document.getElementById("all");
+allBtn.textContent="See all ("+history.length+")";
+allBtn.onclick=()=>{
+  const open=allBtn.getAttribute("aria-expanded")!=="true";
+  history.forEach((c,i)=>{if(!c.top)hist.children[i].hidden=!open});
+  allBtn.setAttribute("aria-expanded",open);allBtn.textContent=open?"Show less":"See all ("+history.length+")";
+};
+const us=document.getElementById("us");usa.forEach(c=>us.appendChild(card(c)));
+
+/* Search */
+const F=["Developer","Publisher","First release","Genre","Platforms","Players","Setting","Franchise","Creator or lead","Fun fact"];
+const D=`Pong|Atari|Atari|1972|Sports|Arcade|1–2|Table tennis|Pong|Allan Alcorn|Began as a training exercise for its engineer.
+Space Invaders|Taito|Taito|1978|Shooter|Arcade|1–2|Space|Space Invaders|Tomohiro Nishikado|Enemies speed up as their numbers shrink.
+Pac-Man|Namco|Namco|1980|Action|Arcade|1–2|Maze|Pac-Man|Toru Iwatani|Each ghost chases you in its own way.
+Donkey Kong|Nintendo|Nintendo|1981|Platformer|Arcade|1–2|Construction site|Donkey Kong|Shigeru Miyamoto|The hero, first called Jumpman, later became Mario.
+Tetris|Alexey Pajitnov|Various|1984|Puzzle|Electronika 60|1|Abstract blocks|Tetris|Alexey Pajitnov|Born in the Soviet Union, made famous by the Game Boy.
+Super Mario Bros.|Nintendo|Nintendo|1985|Platformer|NES|1–2|Mushroom Kingdom|Mario|Shigeru Miyamoto|Sold over 40 million copies.
+The Legend of Zelda|Nintendo|Nintendo|1986|Adventure|Famicom Disk System/NES|1|Hyrule|Zelda|Shigeru Miyamoto|Its cartridge had a battery to save your progress.
+Metroid|Nintendo R&D1|Nintendo|1986|Action|Famicom Disk System/NES|1|Planet Zebes|Metroid|Yoshio Sakamoto|The hero Samus is revealed to be a woman at the end.
+Castlevania|Konami|Konami|1986|Action|Famicom Disk System/NES|1|Dracula’s castle|Castlevania|Hitoshi Akamatsu|Introduced the Belmont family of vampire hunters.
+Final Fantasy|Square|Square|1987|RPG|NES|1|Fantasy world|Final Fantasy|Hironobu Sakaguchi|Its name reflects fears that it might be Square’s last game.
+Super Mario World|Nintendo EAD|Nintendo|1990|Platformer|SNES|1–2|Dinosaur Land|Mario|Takashi Tezuka|Introduced Yoshi.
+Sonic the Hedgehog|Sonic Team|Sega|1991|Platformer|Mega Drive/Genesis|1|Green Hill Zone|Sonic|Yuji Naka|Created to give Sega a mascot to rival Mario.
+Street Fighter II|Capcom|Capcom|1991|Fighting|Arcade|1–2|World tour|Street Fighter|Yoshiki Okamoto|Set off the boom of competitive fighting games.
+Civilization|MicroProse|MicroProse|1991|Strategy|MS-DOS|1|Human history|Civilization|Sid Meier|Guide a nation from the Stone Age to space.
+The Legend of Zelda: A Link to the Past|Nintendo EAD|Nintendo|1991|Adventure|SNES|1|Hyrule and the Dark World|Zelda|Takashi Tezuka|Introduced the parallel Dark World.
+Mortal Kombat|Midway|Midway|1992|Fighting|Arcade|1–2|Tournament|Mortal Kombat|Ed Boon and John Tobias|Its violence helped lead to the ESRB rating system.
+Wolfenstein 3D|id Software|Apogee|1992|Shooter|MS-DOS|1|Nazi fortress|Wolfenstein|John Carmack and John Romero|Popularized the first-person shooter.
+Alone in the Dark|Infogrames|Infogrames|1992|Horror|MS-DOS|1|Derceto mansion|Alone in the Dark|Frédérick Raynal|Seen as a forerunner of survival horror.
+Doom|id Software|id Software|1993|Shooter|MS-DOS|1–4|Mars and Hell|Doom|John Carmack and John Romero|First spread as free shareware.
+Myst|Cyan|Brøderbund|1993|Adventure|Macintosh|1|Mysterious islands|Myst|Rand and Robyn Miller|Among the best-selling PC games of the 1990s.
+NBA Jam|Midway|Midway|1993|Sports|Arcade|1–4|Basketball|NBA Jam|Mark Turmell|Famous for its “He’s on fire!” announcer.
+Super Metroid|Nintendo R&D1|Nintendo|1994|Action|SNES|1|Planet Zebes|Metroid|Yoshio Sakamoto|Helped define the “Metroidvania” style.
+Chrono Trigger|Square|Square|1995|RPG|SNES|1|Time travel|Chrono|Hironobu Sakaguchi and Yuji Horii|Characters drawn by Akira Toriyama.
+Command & Conquer|Westwood Studios|Virgin Interactive|1995|Strategy|MS-DOS|1–2|Global conflict|Command & Conquer|Brett Sperry|Used live-action video briefings.
+Rayman|Ubisoft Montpellier|Ubisoft|1995|Platformer|PlayStation/Jaguar/PC|1|Fantasy world|Rayman|Michel Ancel|A French-made hero with no arms or legs.
+Super Mario 64|Nintendo EAD|Nintendo|1996|Platformer|Nintendo 64|1|Peach’s castle|Mario|Shigeru Miyamoto|Set the standard for 3D movement.
+Resident Evil|Capcom|Capcom|1996|Horror|PlayStation|1|Spencer Mansion|Resident Evil|Shinji Mikami|Made “survival horror” a household term.
+Tomb Raider|Core Design|Eidos Interactive|1996|Adventure|PC/Saturn/PlayStation|1|Ancient ruins|Tomb Raider|Toby Gard|Introduced Lara Croft.
+Pokémon Red and Green|Game Freak|Nintendo|1996|RPG|Game Boy|1–2|Kanto region|Pokémon|Satoshi Tajiri|A link cable lets players trade and battle.
+Quake|id Software|GT Interactive|1996|Shooter|MS-DOS|1–16|Dark fantasy|Quake|John Carmack|Brought full 3D and online play to shooters.
+Crash Bandicoot|Naughty Dog|Sony Computer Entertainment|1996|Platformer|PlayStation|1|Wumpa Islands|Crash Bandicoot|Andy Gavin and Jason Rubin|Became an early PlayStation mascot.
+Final Fantasy VII|Square|Square|1997|RPG|PlayStation|1|The city of Midgar|Final Fantasy|Yoshinori Kitase|Helped bring Japanese RPGs to a worldwide audience.
+GoldenEye 007|Rare|Nintendo|1997|Shooter|Nintendo 64|1–4|Spy missions|James Bond|Martin Hollis|Proved console shooters could work.
+Gran Turismo|Polyphony Digital|Sony Computer Entertainment|1997|Racing|PlayStation|1–2|Real-world cars|Gran Turismo|Kazunori Yamauchi|Cars are modeled on real models.
+Metal Gear Solid|Konami|Konami|1998|Action|PlayStation|1|Alaskan base|Metal Gear|Hideo Kojima|Famous for its cinematic style and boss fights.
+The Legend of Zelda: Ocarina of Time|Nintendo EAD|Nintendo|1998|Adventure|Nintendo 64|1|Hyrule|Zelda|Shigeru Miyamoto|Its lock-on targeting was widely copied.
+Half-Life|Valve|Sierra Studios|1998|Shooter|PC|1|Black Mesa facility|Half-Life|Gabe Newell|Told its story without cut-scenes.
+StarCraft|Blizzard Entertainment|Blizzard Entertainment|1998|Strategy|PC|1–8|Space|StarCraft|Chris Metzen and James Phinney|Became a pillar of esports in South Korea.
+Baldur’s Gate|BioWare|Interplay|1998|RPG|PC|1–6|Forgotten Realms|Baldur’s Gate|Ray Muzyka and Greg Zeschuk|Built on Dungeons & Dragons rules.
+Age of Empires II|Ensemble Studios|Microsoft|1999|Strategy|PC|1–8|Middle Ages|Age of Empires|Ensemble Studios|Still played and updated decades later.
+The Sims|Maxis|Electronic Arts|2000|Simulation|PC|1|Suburban homes|The Sims|Will Wright|One of the best-selling PC franchises.
+Diablo II|Blizzard North|Blizzard Entertainment|2000|RPG|PC|1–8|Gothic fantasy|Diablo|David Brevik|Its loot hunts defined action RPGs.
+Counter-Strike|Valve|Valve|2000|Shooter|PC|Online in teams|Counter-terrorism|Counter-Strike|Minh Le and Jess Cliffe|Began as a mod for Half-Life.
+Tony Hawk’s Pro Skater 2|Neversoft|Activision|2000|Sports|PlayStation|1–2|Skate parks|Tony Hawk’s|Neversoft team|Remade in 2020 in a collection with the first game.
+Grand Theft Auto III|DMA Design|Rockstar Games|2001|Action|PlayStation 2|1|Liberty City|Grand Theft Auto|Dan Houser|Brought open-world crime games into 3D.
+Halo: Combat Evolved|Bungie|Microsoft Game Studios|2001|Shooter|Xbox|1–4|Halo ring|Halo|Jason Jones|The signature launch game of the Xbox.
+Super Smash Bros. Melee|HAL Laboratory|Nintendo|2001|Fighting|GameCube|1–4|Nintendo crossover|Super Smash Bros.|Masahiro Sakurai|Still played in tournaments today.
+Silent Hill 2|Team Silent|Konami|2001|Horror|PlayStation 2|1|Silent Hill town|Silent Hill|Masashi Tsuboyama|Praised for its psychological horror.
+Kingdom Hearts|Square|Square|2002|RPG|PlayStation 2|1|Disney worlds|Kingdom Hearts|Tetsuya Nomura|Mixes Disney and Final Fantasy characters.
+Prince of Persia: The Sands of Time|Ubisoft Montreal|Ubisoft|2003|Action|PS2/Xbox/GameCube/PC|1|Persian palace|Prince of Persia|Jordan Mechner|Lets you rewind time after a mistake.
+Beyond Good & Evil|Ubisoft Montpellier|Ubisoft|2003|Adventure|PS2/Xbox/GameCube/PC|1|Planet Hillys|Beyond Good & Evil|Michel Ancel|A cult classic made in France.
+World of Warcraft|Blizzard Entertainment|Blizzard Entertainment|2004|RPG|PC|Online (MMO)|Azeroth|Warcraft|Rob Pardo|Peaked at over 12 million subscribers.
+Half-Life 2|Valve|Valve|2004|Shooter|PC|1|City 17|Half-Life|Gabe Newell|Launched with the Source engine and Steam.
+Shadow of the Colossus|Team Ico|Sony Computer Entertainment|2005|Adventure|PlayStation 2|1|Forbidden land|Ico|Fumito Ueda|Built around just sixteen giant bosses.
+Resident Evil 4|Capcom|Capcom|2005|Horror|GameCube|1|Rural Spain|Resident Evil|Shinji Mikami|Its over-the-shoulder camera influenced many shooters.
+Wii Sports|Nintendo EAD|Nintendo|2006|Sports|Wii|1–4|Virtual arenas|Wii|Katsuya Eguchi|Came bundled with the Wii console.
+Portal|Valve|Valve|2007|Puzzle|PC|1|Aperture Science labs|Portal|Kim Swift|Grew out of a student project called Narbacular Drop.
+BioShock|2K Boston|2K Games|2007|Shooter|PC/Xbox 360|1|Underwater city of Rapture|BioShock|Ken Levine|Its city of Rapture is a signature setting.
+Call of Duty 4: Modern Warfare|Infinity Ward|Activision|2007|Shooter|PC/Xbox 360/PS3|1–18|Modern conflict|Call of Duty|Infinity Ward|Popularized perks and ranks in online play.
+Super Mario Galaxy|Nintendo EAD Tokyo|Nintendo|2007|Platformer|Wii|1–2|Outer space|Mario|Yoshiaki Koizumi|Gravity shifts as you run around tiny planets.
+Assassin’s Creed|Ubisoft Montreal|Ubisoft|2007|Action|PS3/Xbox 360/PC|1|Third Crusade|Assassin’s Creed|Patrice Désilets|The series later visited many historical eras.
+Fallout 3|Bethesda Game Studios|Bethesda Softworks|2008|RPG|PC/Xbox 360/PS3|1|Ruined Washington, D.C.|Fallout|Todd Howard|Moved the series to first-person 3D.
+League of Legends|Riot Games|Riot Games|2009|Strategy|PC|10|Runeterra|League of Legends|Brandon Beck and Marc Merrill|One of the biggest esports titles.
+Batman: Arkham Asylum|Rocksteady Studios|Eidos Interactive|2009|Action|PS3/Xbox 360/PC|1|Arkham Asylum|Batman: Arkham|Sefton Hill|Praised as a landmark superhero game.
+Mass Effect 2|BioWare|Electronic Arts|2010|RPG|PC/Xbox 360|1|Milky Way|Mass Effect|Casey Hudson|Your choices carry over from the first game.
+Red Dead Redemption|Rockstar San Diego|Rockstar Games|2010|Action|PS3/Xbox 360|1|American frontier|Red Dead|Rockstar San Diego|Set in the fading Wild West of 1911.
+Limbo|Playdead|Playdead|2010|Platformer|Xbox 360|1|Dark forest|Limbo|Arnt Jensen|Its black-and-white look inspired many indie games.
+Minecraft|Mojang|Mojang|2011|Sandbox|PC|Solo or online|Procedural blocky worlds|Minecraft|Markus Persson|Became one of the best-selling games ever.
+The Elder Scrolls V: Skyrim|Bethesda Game Studios|Bethesda Softworks|2011|RPG|PC/Xbox 360/PS3|1|Skyrim province|The Elder Scrolls|Todd Howard|Re-released on many platforms over the years.
+Portal 2|Valve|Valve|2011|Puzzle|PC/Xbox 360/PS3|1–2|Aperture Science labs|Portal|Valve team|Adds a two-player co-op campaign.
+Dark Souls|FromSoftware|Namco Bandai|2011|RPG|Xbox 360/PS3|1|Lordran|Souls|Hidetaka Miyazaki|Known for its demanding combat.
+Terraria|Re-Logic|Re-Logic|2011|Sandbox|PC|1–8|2D worlds|Terraria|Andrew Spinks|Digging, building and fighting in two dimensions.
+Journey|thatgamecompany|Sony Computer Entertainment|2012|Adventure|PlayStation 3|1–2|Desert|Journey|Jenova Chen|You meet anonymous companions along the way.
+Grand Theft Auto V|Rockstar North|Rockstar Games|2013|Action|PS3/Xbox 360|1–30|Los Santos|Grand Theft Auto|Rockstar North|One of the best-selling games of all time.
+The Last of Us|Naughty Dog|Sony Computer Entertainment|2013|Action|PlayStation 3|1–8|Post-pandemic America|The Last of Us|Neil Druckmann and Bruce Straley|Won wide praise for its characters and story.
+Dota 2|Valve|Valve|2013|Strategy|PC|10|Fantasy battlefield|Dota|Icefrog|Hosts The International with record prize pools.
+The Witcher 3: Wild Hunt|CD Projekt Red|CD Projekt|2015|RPG|PC/PS4/Xbox One|1|Northern Kingdoms|The Witcher|Konrad Tomaszkiewicz|Based on novels by Andrzej Sapkowski.
+Undertale|Toby Fox|Toby Fox|2015|RPG|PC|1|Underground world|Undertale|Toby Fox|Made almost entirely by one person.
+Rocket League|Psyonix|Psyonix|2015|Sports|PC/PS4|1–8|Arena|Rocket League|Psyonix team|Plays like soccer with rocket-powered cars.
+Stardew Valley|ConcernedApe|ConcernedApe|2016|Simulation|PC|1–4|Pelican Town farm|Stardew Valley|Eric Barone|Built mostly by one developer.
+Overwatch|Blizzard Entertainment|Blizzard Entertainment|2016|Shooter|PC/consoles|12|Near-future Earth|Overwatch|Jeff Kaplan|A team-based hero shooter.
+The Legend of Zelda: Breath of the Wild|Nintendo EPD|Nintendo|2017|Adventure|Switch/Wii U|1|Hyrule|Zelda|Hidemaro Fujibayashi|Launched alongside the Nintendo Switch.
+Super Mario Odyssey|Nintendo EPD|Nintendo|2017|Platformer|Switch|1–2|Many kingdoms|Mario|Kenta Motokura|Mario can take control of enemies with his hat.
+Mario Kart 8 Deluxe|Nintendo EPD|Nintendo|2017|Racing|Switch|1–8|Mushroom Kingdom tracks|Mario Kart|Kosuke Yabuki|An enhanced version of the 2014 Wii U game.
+Hollow Knight|Team Cherry|Team Cherry|2017|Action|PC|1|Hallownest|Hollow Knight|Ari Gibson and William Pellen|Made by a small studio in Australia.
+Fortnite|Epic Games|Epic Games|2017|Shooter|PC/consoles|1–100|Island|Fortnite|Epic Games|Its battle royale mode is free to play.
+Celeste|Maddy Makes Games|Maddy Makes Games|2018|Platformer|PC/Switch|1|Celeste Mountain|Celeste|Maddy Thorson|Includes an assist mode to adjust difficulty.
+God of War|Santa Monica Studio|Sony Interactive Entertainment|2018|Action|PlayStation 4|1|Norse realms|God of War|Cory Barlog|Presented as one continuous camera shot.
+Red Dead Redemption 2|Rockstar Games|Rockstar Games|2018|Action|PS4/Xbox One|1|America in 1899|Red Dead|Rockstar Games|Prequel to the first Red Dead Redemption.
+Disco Elysium|ZA/UM|ZA/UM|2019|RPG|PC|1|City of Revachol|Disco Elysium|Robert Kurvitz|Has no combat; your skills argue in your head.
+Sekiro: Shadows Die Twice|FromSoftware|Activision|2019|Action|PC/PS4/Xbox One|1|Sengoku-era Japan|Sekiro|Hidetaka Miyazaki|Swaps character levels for a posture system.
+Death Stranding|Kojima Productions|Sony Interactive Entertainment|2019|Adventure|PlayStation 4|1|Post-apocalyptic America|Death Stranding|Hideo Kojima|A delivery game with asynchronous online features.
+Animal Crossing: New Horizons|Nintendo EPD|Nintendo|2020|Simulation|Switch|1–8|Deserted island|Animal Crossing|Aya Kyogoku|Became a pandemic-era hit in 2020.
+Hades|Supergiant Games|Supergiant Games|2020|Action|PC/Switch|1|Greek underworld|Hades|Greg Kasavin|The story moves forward with every failed run.
+Cyberpunk 2077|CD Projekt Red|CD Projekt|2020|RPG|PC/PS4/Xbox One|1|Night City|Cyberpunk|Adam Badowski|Based on Mike Pondsmith’s tabletop game.
+Forza Horizon 5|Playground Games|Xbox Game Studios|2021|Racing|PC/Xbox|1–72|Mexico|Forza Horizon|Playground Games|An open-world festival set in Mexico.
+Elden Ring|FromSoftware|Bandai Namco|2022|RPG|PC/PS/Xbox|1–4|The Lands Between|Souls|Hidetaka Miyazaki|Worldbuilding by author George R. R. Martin.
+Baldur’s Gate 3|Larian Studios|Larian Studios|2023|RPG|PC/PS5|1–4|Forgotten Realms|Baldur’s Gate|Swen Vincke|Built on Dungeons & Dragons rules.
+The Legend of Zelda: Tears of the Kingdom|Nintendo EPD|Nintendo|2023|Adventure|Switch|1|Hyrule and its skies|Zelda|Hidemaro Fujibayashi|Lets you build vehicles and devices.
+Clair Obscur: Expedition 33|Sandfall Interactive|Kepler Interactive|2025|RPG|PC/PS5/Xbox Series|1|Belle Époque-inspired world|Standalone|Guillaume Broche|A French studio’s turn-based RPG with real-time dodging.
+Breakout|Atari|Atari|1976|Action|Arcade|1|Brick wall|Breakout|Nolan Bushnell (concept)|Its prototype was built by Steve Jobs and Steve Wozniak.
+Asteroids|Atari|Atari|1979|Shooter|Arcade|1–2|Space|Asteroids|Lyle Rains and Ed Logg|Used vector graphics drawn as glowing lines.
+Zork I|Infocom|Infocom|1980|Adventure|PC/Apple II|1|Great Underground Empire|Zork|Marc Blank and Dave Lebling|A text adventure with no graphics at all.
+Galaga|Namco|Namco|1981|Shooter|Arcade|1–2|Space|Galaga|Shigeru Yokoyama|A captured ship can be rescued to double your firepower.
+Frogger|Konami|Sega|1981|Action|Arcade|1–2|Road and river|Frogger|Konami team|Konami developed it, and Sega published it in North America.
+Dragon Quest|Chunsoft|Enix|1986|RPG|Famicom/NES|1|Alefgard|Dragon Quest|Yuji Horii|Its simple design helped RPGs reach a mass audience in Japan.
+Bubble Bobble|Taito|Taito|1986|Platformer|Arcade|1–2|Cave towers|Bubble Bobble|Fukio Mitsuji|You trap enemies in bubbles and pop them.
+Contra|Konami|Konami|1987|Shooter|Arcade|1–2|Alien jungle|Contra|Konami team|The NES version is known for its 30-lives cheat code.
+SimCity|Maxis|Maxis|1989|Simulation|PC/Macintosh|1|A growing city|SimCity|Will Wright|Players plan and manage a city from scratch.
+Prince of Persia|Brøderbund|Brøderbund|1989|Platformer|Apple II|1|Persian palace|Prince of Persia|Jordan Mechner|Its animation was based on footage of the creator’s brother.
+The Secret of Monkey Island|Lucasfilm Games|Lucasfilm Games|1990|Adventure|PC|1|Caribbean island|Monkey Island|Ron Gilbert|Players cannot die, a deliberate design choice.
+Lemmings|DMA Design|Psygnosis|1991|Puzzle|Amiga|1|Cliffs and caves|Lemmings|Dave Jones|You guide tiny creatures to safety by assigning skills.
+Super Mario Kart|Nintendo EAD|Nintendo|1992|Racing|SNES|1–2|Mushroom Kingdom|Mario Kart|Tadashi Sugiyama|Launched the kart-racing genre.
+Kirby’s Dream Land|HAL Laboratory|Nintendo|1992|Platformer|Game Boy|1|Dream Land|Kirby|Masahiro Sakurai|Sakurai was a young designer on his first major game.
+EarthBound|Ape and HAL Laboratory|Nintendo|1994|RPG|SNES|1|Modern-day world|Mother|Shigesato Itoi|Known for its offbeat humor.
+Donkey Kong Country|Rare|Nintendo|1994|Platformer|SNES|1–2|Jungle|Donkey Kong|Rare team|Used pre-rendered 3D-style graphics on the SNES.
+Warcraft II: Tides of Darkness|Blizzard Entertainment|Blizzard Entertainment|1995|Strategy|MS-DOS|1–2|Azeroth|Warcraft|Blizzard team|Helped popularize real-time strategy.
+Diablo|Blizzard North|Blizzard Entertainment|1996|RPG|PC|1–4|Tristram|Diablo|David Brevik|Introduced randomly generated dungeons to a wide audience.
+Fallout|Black Isle Studios|Interplay|1997|RPG|PC|1|Post-nuclear California|Fallout|Tim Cain|Mixes turn-based combat with dark humor.
+Tekken 3|Namco|Namco|1997|Fighting|PlayStation|1–2|Tournament|Tekken|Namco team|One of the best-selling PlayStation fighting games.
+Resident Evil 2|Capcom|Capcom|1998|Horror|PlayStation|1|Raccoon City|Resident Evil|Hideki Kamiya|Two playable characters have overlapping scenarios.
+Grim Fandango|LucasArts|LucasArts|1998|Adventure|PC|1|Land of the Dead|Standalone|Tim Schafer|Blends film noir with Mexican folklore.
+Spyro the Dragon|Insomniac Games|Sony Computer Entertainment|1998|Platformer|PlayStation|1|Dragon realms|Spyro|Ted Price|Insomniac’s breakout hit.
+Pokémon Gold and Silver|Game Freak|Nintendo|1999|RPG|Game Boy Color|1–2|Johto region|Pokémon|Satoshi Tajiri|Added a day-and-night cycle.
+Deus Ex|Ion Storm|Eidos Interactive|2000|RPG|PC|1|Near-future conspiracy|Deus Ex|Warren Spector|Lets players solve missions in many ways.
+Max Payne|Remedy Entertainment|Gathering of Developers|2001|Shooter|PC|1|New York|Max Payne|Sam Lake|Popularized bullet-time in shooters.
+Ico|Team Ico|Sony Computer Entertainment|2001|Adventure|PlayStation 2|1|Ancient castle|Ico|Fumito Ueda|Built around holding a companion’s hand.
+Metroid Prime|Retro Studios|Nintendo|2002|Action|GameCube|1|Tallon IV|Metroid|Retro Studios team|Brought Metroid to a first-person view.
+Katamari Damacy|Namco|Namco|2004|Action|PlayStation 2|1|Everyday objects|Katamari|Keita Takahashi|You roll a ball that picks up everything it touches.
+Guitar Hero|Harmonix|RedOctane|2005|Music|PlayStation 2|1–2|Rock concerts|Guitar Hero|Harmonix team|Played with a guitar-shaped controller.
+Gears of War|Epic Games|Microsoft Game Studios|2006|Shooter|Xbox 360|1–2|Planet Sera|Gears of War|Cliff Bleszinski|Popularized cover-based shooting.
+Left 4 Dead|Turtle Rock Studios|Valve|2008|Shooter|PC/Xbox 360|1–4|Zombie apocalypse|Left 4 Dead|Turtle Rock Studios|An AI Director adjusts the pacing.
+Braid|Number None|Microsoft Game Studios|2008|Puzzle|Xbox 360|1|Dreamlike worlds|Braid|Jonathan Blow|Time-manipulation puzzles made it an indie landmark.
+Plants vs. Zombies|PopCap Games|PopCap Games|2009|Strategy|PC|1|Suburban lawn|Plants vs. Zombies|George Fan|A tower-defense hit built on a simple idea.
+Angry Birds|Rovio Entertainment|Chillingo|2009|Puzzle|iOS|1|Pig-filled islands|Angry Birds|Jaakko Iisalo|Became a mobile phenomenon.
+Super Meat Boy|Team Meat|Team Meat|2010|Platformer|PC/Xbox 360|1|Meat world|Super Meat Boy|Edmund McMillen and Tommy Refenes|Tough levels restart instantly.
+The Walking Dead|Telltale Games|Telltale Games|2012|Adventure|PC/consoles|1|Zombie apocalypse|The Walking Dead|Telltale Games|Your choices change how the story unfolds.
+Papers, Please|3909 LLC|3909 LLC|2013|Simulation|PC|1|Border checkpoint|Standalone|Lucas Pope|You play a border inspector facing moral choices.
+Shovel Knight|Yacht Club Games|Yacht Club Games|2014|Platformer|PC/Wii U/3DS|1–2|Fantasy kingdom|Shovel Knight|Yacht Club Games|Funded through Kickstarter.
+Monument Valley|ustwo games|ustwo games|2014|Puzzle|iOS|1|Impossible architecture|Monument Valley|Ken Wong|Visually inspired by M. C. Escher.
+Bloodborne|FromSoftware|Sony Computer Entertainment|2015|RPG|PlayStation 4|1|Gothic city of Yharnam|Standalone|Hidetaka Miyazaki|A gothic-horror twist on the Souls formula.
+Splatoon|Nintendo EAD|Nintendo|2015|Shooter|Wii U|1–8|Inkopolis|Splatoon|Hisashi Nogami|Teams cover the map in ink.
+Persona 5|Atlus|Atlus|2016|RPG|PS3/PS4|1|Modern Tokyo|Persona|Katsura Hashino|Mixes school life with dungeon crawling.
+Pokémon Go|Niantic|Niantic|2016|Adventure|iOS/Android|Solo or online|The real world|Pokémon|John Hanke|Uses augmented reality outdoors.
+Inside|Playdead|Playdead|2016|Platformer|PC/Xbox One|1|Dark facility|Standalone|Arnt Jensen|From the makers of Limbo.
+NieR: Automata|PlatinumGames|Square Enix|2017|Action|PS4/PC|1|Post-apocalyptic Earth|NieR|Yoko Taro|Has multiple endings.
+Cuphead|Studio MDHR|Studio MDHR|2017|Platformer|PC/Xbox One|1–2|Inkwell Isle|Cuphead|Chad and Jared Moldenhauer|Hand-drawn in the style of 1930s cartoons.
+PUBG: Battlegrounds|PUBG Corporation|PUBG Corporation|2017|Shooter|PC|1–100|Remote islands|PUBG|Brendan Greene|Helped start the battle royale boom.
+Among Us|Innersloth|Innersloth|2018|Strategy|PC/mobile|4–15|Spaceship|Among Us|Innersloth|Went viral in 2020.
+Marvel’s Spider-Man|Insomniac Games|Sony Interactive Entertainment|2018|Action|PlayStation 4|1|New York|Spider-Man|Insomniac Games|Web-swing across Manhattan.`;
+const games=D.trim().split("\n").map(l=>{const p=l.split("|");return{t:p[0],f:p.slice(1)}}).sort((a,b)=>a.f[2]-b.f[2]);
+const genres=["All",...[...new Set(games.map(g=>g.f[3]))].sort()];
+let genre="All";
+const q=document.getElementById("q"),res=document.getElementById("results"),cnt=document.getElementById("count"),empty=document.getElementById("empty"),chips=document.querySelector(".chips");
+genres.forEach(g=>{
+  const b=document.createElement("button");b.className="chip";b.textContent=g;b.setAttribute("aria-pressed",g==="All");
+  b.onclick=()=>{genre=g;chips.querySelectorAll(".chip").forEach(c=>c.setAttribute("aria-pressed",c===b));render()};
+  chips.appendChild(b);
+});
+function fullText(g){
+  const f=g.f;
+  const kind=f[3]==="RPG"?"an RPG":(/^[AEIOU]/.test(f[3])?"an ":"a ")+f[3].toLowerCase()+" game";
+  const by=f[0]===f[1]?"developed and published by "+f[0]:"developed by "+f[0]+" and published by "+f[1];
+  const n=/^\d/.test(f[5])?"supports "+f[5]+(f[5]==="1"?" player":" players"):"is played "+f[5].charAt(0).toLowerCase()+f[5].slice(1);
+  const fr=f[7]==="Standalone"?"It is a standalone title":f[7]===g.t?"It is the namesake of its franchise":"It is part of the "+f[7]+" series";
+  return g.t+" is "+kind+" "+by+". It first came out in "+f[2]+" on "+f[4]+" and "+n+". Theme and setting: "+f[6]+". "+fr+". Key credit: "+f[8]+". Worth knowing: "+f[9];
+}
+function render(){
+  const s=q.value.trim().toLowerCase();
+  const list=games.filter(g=>(genre==="All"||g.f[3]===genre)&&(!s||(g.t+" "+g.f.join(" ")).toLowerCase().includes(s)));
+  res.textContent="";
+  list.forEach(g=>{
+    const d=document.createElement("details");d.className="game";
+    const sm=document.createElement("summary"),b=document.createElement("b"),sp=document.createElement("span");
+    b.textContent=g.t;sp.textContent=g.f[3]+" · "+g.f[2];sm.append(b,sp);
+    const p1=document.createElement("p"),p2=document.createElement("p"),r=document.createElement("a");
+    p1.textContent=g.f[9];p2.textContent=g.f[0]+" · "+g.f[4]+" · Players: "+g.f[5];
+    r.className="btn";r.textContent="Read More";r.href="#g-"+slug(g.t);
+    d.append(sm,p1,p2,r);res.appendChild(d);
+  });
+  cnt.textContent=list.length+(list.length===1?" game":" games")+" · tap Read More for the full page";
+  empty.hidden=list.length>0;
+}
+q.addEventListener("input",render);render();
+
+/* Theme */
+const mq=matchMedia("(prefers-color-scheme:dark)"),root=document.documentElement;
+document.getElementById("theme").onclick=()=>{
+  const dark=root.dataset.theme?root.dataset.theme==="dark":mq.matches;
+  root.dataset.theme=dark?"light":"dark";
+};
+
+/* Pong */
+(function(){
+  const c=document.getElementById("pong"),x=c.getContext("2d"),W=c.width,H=c.height;
+  let bx=W/2,by=H/2,vx=3.2,vy=2.2,l=H/2,r=H/2,rally=0,run=true,going=false,vis=true;const ph=56;
+  function draw(){
+    x.fillStyle="#0a0a0c";x.fillRect(0,0,W,H);
+    x.fillStyle="#2a2a30";for(let y=0;y<H;y+=16)x.fillRect(W/2-2,y,4,8);
+    x.fillStyle="#f3f1ea";x.fillRect(16,l-ph/2,8,ph);
+    x.fillStyle="#c8ff3a";x.fillRect(W-24,r-ph/2,8,ph);
+    x.fillStyle="#ff5a36";x.fillRect(bx-6,by-6,12,12);
+    x.fillStyle="#c8ff3a";x.font="14px monospace";x.fillText("RALLY "+String(rally).padStart(3,"0"),W/2-42,22);
+  }
+  function step(){
+    bx+=vx;by+=vy;
+    if(by<6||by>H-6)vy=-vy;
+    l+=(by-l)*.12;r+=(by-r)*.12;
+    if(bx<30||bx>W-30){vx=-vx;rally++}
+    draw();
+    if(!reduce&&run)requestAnimationFrame(step);else going=false;
+  }
+  function upd(){run=vis&&!document.hidden;if(run&&!going&&!reduce){going=true;requestAnimationFrame(step)}}
+  step();going=!reduce;
+  if("IntersectionObserver" in window)new IntersectionObserver(es=>{vis=es[0].isIntersecting;upd()}).observe(c);
+  document.addEventListener("visibilitychange",upd);
+})();
+const LONG={"Pong":`## Origins
+Pong was released by Atari in November 1972 as an arcade cabinet.
+Atari had been founded earlier that year by Nolan Bushnell and Ted Dabney.
+The two had already made Computer Space, an arcade game from 1971.
+Computer Space was hard to learn and did not sell as well as hoped.
+Bushnell wanted a game so simple that anyone could understand it in seconds.
+He gave a young engineer, Allan Alcorn, a practice project: a tennis-style game.
+Alcorn was told it was a training exercise, and he built it with simple circuits.
+Bushnell had seen a tennis game on the Magnavox Odyssey at a 1972 demonstration.
+Magnavox later sued Atari, and Atari settled by becoming a licensee.
+The first Pong used a TV set and logic circuits, with no microprocessor.
+## The test machine
+Alcorn built a prototype and put it in Andy Capp’s Tavern in Sunnyvale, California.
+The machine was installed there in 1972 as a test.
+According to the well-known story, it stopped working after a few days.
+The tavern owner called Atari and the cause turned out to be a coin box overflowing with quarters.
+That story convinced Atari that it had a hit on its hands.
+## How it works
+Each player controls a paddle that moves up and down the screen.
+A square ball bounces between the paddles like in table tennis.
+If a player misses the ball, the opponent scores a point.
+The ball speeds up as the rally goes on, which raises the tension.
+The paddle is split into segments so the ball rebounds at different angles.
+The instructions on the cabinet were famously short.
+The game was shown in black and white on a modified TV.
+Its beeps and boops were made with simple circuitry.
+## Success
+Pong became the first commercially successful arcade video game.
+Arcades, bars and bowling alleys ordered the machines in large numbers.
+Many competitors released copies, and the market filled with imitations.
+Atari soon built Home Pong, a version that plugged into a home television.
+Home Pong was sold through Sears in 1975.
+The home version brought the game into living rooms across the United States.
+Pong made Atari one of the fastest-growing companies of its era.
+Its success pushed Atari to develop many more arcade games.
+## Legacy
+Pong helped prove that video games could be a business and not just a lab curiosity.
+It started the arcade industry that grew into the golden age of the late 1970s.
+Its two-paddle look has become a symbol of early video games.
+Many designers study Pong as an example of simple, clear design.
+Its rules fit on one line, yet matches can last for minutes.
+The game teaches the basics of reaction time and prediction.
+Pong has been remade and cloned countless times on many platforms.
+Atari later released new versions, including Pong Doubles for four players.
+It remains easy to learn and hard to master.
+Museums around the world display original Pong machines.
+Some collectors still repair and play original cabinets.
+The graphics are simple enough to recreate in a few lines of modern code.
+For many programmers, Pong is among the first games they build.
+Its code and circuits are small enough to study in a single sitting.
+Pong also shows how a single idea can launch a whole industry.
+Atari’s next big hits would include Breakout in 1976.
+Nolan Bushnell later founded Chuck E. Cheese’s, a restaurant chain with arcade games.
+Allan Alcorn later worked at Apple.
+More than fifty years later, Pong is still a household name.`,"Super Mario Bros.":`## Origins
+Super Mario Bros. was released by Nintendo in Japan on September 13, 1985, for the Famicom.
+The Nintendo Entertainment System version followed in North America, starting in late 1985.
+Shigeru Miyamoto and Takashi Tezuka designed the game.
+Koji Kondo composed the music.
+Mario had first appeared in Donkey Kong in 1981.
+The 1983 arcade game Mario Bros. introduced his brother Luigi.
+Miyamoto wanted a long game with scrolling levels full of surprises.
+The Famicom had limited memory, so the team used clever tricks.
+Clouds and bushes in the game use the same graphic with different colors.
+Mario wears a cap and has a mustache partly because they are easy to show with few pixels.
+## The game
+You play Mario, a plumber, who must rescue the princess from the villain Bowser.
+The princess was called Princess Toadstool in the original Western release.
+The game has eight worlds, each with four levels.
+Each world ends with a castle and a fight with Bowser or a fake Bowser.
+Mushrooms make Mario bigger, and Fire Flowers let him throw fireballs.
+Starmen make him invincible for a short time.
+Collecting a hundred coins gives an extra life.
+Warp pipes let players skip ahead to later worlds.
+Hidden blocks hide extra coins and power-ups.
+Goombas and Koopa Troopas are the most common enemies.
+Jumping on enemies defeats them, a rule that defined the series.
+The levels scroll to the right, teaching players to keep moving.
+World 1-1 is a famous tutorial that teaches the rules without any text.
+A two-player mode lets Mario and Luigi take turns.
+## Music
+Koji Kondo’s overworld theme is among the most recognizable game tunes ever.
+The underground and castle themes change the mood with only a few notes.
+Sound effects, like the coin chime, are simple but instantly memorable.
+The music loops cleanly so long play sessions stay pleasant.
+## Impact
+The game sold more than 40 million copies.
+It was bundled with the NES in many regions, which boosted sales.
+It helped revive the home console market after the 1983 crash.
+Nintendo became the dominant company in video games for years.
+The success led to Super Mario Bros. 2 and 3 and later Super Mario World.
+Super Mario Bros. 3 is often named among the best games ever made.
+Mario became one of the most recognizable characters in the world.
+A live-action film, Super Mario Bros., was released in 1993.
+An animated film, The Super Mario Bros. Movie, was a major hit in 2023.
+The game has been re-released many times, including through Nintendo Switch Online.
+Speedrunners compete to finish it in under five minutes.
+Some speedrunners use glitches like the “wrong warp.”
+## Design lessons
+The first screen shows a clear goal: go right.
+Early enemies are easy so players learn by doing.
+Risks and rewards sit close together, such as coins over a pit.
+Power-ups appear when you need them most.
+The controls use only a D-pad and two buttons.
+Holding the run button changes how far Mario jumps.
+Short levels make it easy to try again after a mistake.
+Secrets reward curious players without punishing others.
+Many later platformers copied these ideas.
+Decades later, it is still taught as a model of game design.`,"PlayStation":`## Origins
+Sony released the original PlayStation in Japan on December 3, 1994.
+It launched in North America and Europe in 1995.
+The project began as a collaboration with Nintendo on a CD add-on for the Super Famicom.
+The deal collapsed, and Sony decided to build its own console.
+Engineer Ken Kutaragi led the hardware effort at Sony.
+Sony chose CD-ROM discs instead of cartridges.
+CDs were cheaper to make and held far more data than cartridges.
+That made large games, music and video possible.
+The system was designed for fast 3D graphics.
+## The hardware
+The console had a processor running at about 34 MHz.
+It had 2 MB of main memory and 1 MB of video memory.
+It could draw textured 3D polygons much faster than earlier consoles.
+Memory cards stored save data.
+The first controller had a D-pad and four face buttons marked with symbols.
+The symbols were a triangle, a circle, a cross and a square.
+Analog sticks arrived in 1997, followed by the DualShock.
+The DualShock added vibration feedback.
+The console’s gray design was simple and compact.
+## The games
+Ridge Racer was a launch title in Japan.
+Tekken, Gran Turismo and Final Fantasy VII followed.
+Final Fantasy VII (1997) helped bring RPGs to a global audience.
+Metal Gear Solid (1998) showed cinematic storytelling.
+Resident Evil (1996) made survival horror famous.
+Crash Bandicoot (1996) became an early mascot.
+Tomb Raider arrived on PlayStation too.
+Spyro the Dragon (1998) was another hit platformer.
+Wipeout (1995) showed the console as a cool, grown-up platform.
+Many of these games used 3D worlds and full-motion video.
+## Market impact
+Sony targeted teenagers and young adults with its marketing.
+Stylish ads and music partnerships helped the console feel new.
+Third-party studios liked the lower disc cost compared with cartridges.
+Nintendo’s Nintendo 64 used cartridges, which cost developers more.
+Square moved Final Fantasy from Nintendo to PlayStation, a major win for Sony.
+The PlayStation passed 100 million units sold.
+It became the first console to reach that mark.
+It pushed Sega’s Saturn aside and challenged Nintendo’s lead.
+Its success led to the PlayStation 2 in 2000.
+## Legacy
+The PlayStation 2 became the best-selling console ever.
+The brand continued with the PS3, PS4 and PS5.
+A smaller PSone model was released in 2000.
+The PlayStation logo and startup sound became iconic.
+It helped make 3D the standard for home games.
+It proved that games could appeal to older audiences.
+It established the pattern of discs, online services and big-budget exclusives.
+Sony Computer Entertainment became a major pillar of the company.
+Many fans still collect original discs and consoles.
+Emulation and re-releases keep classics playable today.
+The PlayStation Classic mini console came out in 2018.
+The original console showed that a newcomer could beat established giants.
+For many players, it is the console of their childhood.`};
+const detail=document.getElementById("detail"),mainEl=document.getElementById("mainview");
+function mk(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt)e.textContent=txt;return e}
+function hlSummary(c,short){
+  const yr=+c.y,age=new Date().getFullYear()-yr;
+  const era="It happened in "+c.y+", "+age+" years ago, in the "+Math.floor(yr/10)*10+"s.";
+  if(short)return c.d+" "+c.m+" "+era;
+  if(LONG[c.t]){
+    const L=LONG[c.t].split("\n"),out=[];
+    L.forEach((l,i)=>{if(l.startsWith("## ")&&L[i+1])out.push(L[i+1])});
+    return out.join(" ")+" "+era;
+  }
+  const near=history.filter(x=>x!==c).sort((a,b)=>Math.abs(a.y-yr)-Math.abs(b.y-yr))[0];
+  return c.d+" "+c.m+" "+era+" Close in time: "+near.t+" ("+near.y+").";
+}
+function showDetail(i){
+  const c=history[i];detail.textContent="";
+  const w=mk("div","wrap article");
+  const back=mk("a","btn alt","Back to highlights");back.href="#history";
+  w.append(back,mk("div","yr",c.y),mk("h2","",c.t),mk("p","lead",c.d));
+  w.append(mk("h3","","Summary"),mk("p","",hlSummary(c)));
+  const b2=mk("a","btn alt","Back to highlights");b2.href="#history";
+  const nav=mk("div","nav2");nav.append(b2);w.append(nav);detail.append(w);
+}
+const GENRE={"Action": ["Action games test reflexes, timing and hand-eye coordination.", "They range from arcade classics to large story-driven adventures.", "Success usually depends on quick decisions under pressure.", "Many action games borrow ideas from other genres, such as exploration or role-playing.", "Difficulty often rises gradually so players can improve with practice."], "Adventure": ["Adventure games focus on exploration, story and solving problems.", "Early examples were text-based, and later ones added pictures and then full 3D worlds.", "Players collect items, talk to characters and uncover secrets.", "Puzzles often block the way and reward careful thinking.", "Combat, if present, is usually secondary to the story."], "RPG": ["Role-playing games let you grow a character over many hours.", "Stats, levels and equipment decide how strong your character becomes.", "Dialogue and choices often shape the story.", "Combat can be turn-based or in real time.", "Japanese and Western RPG traditions developed in different directions."], "Strategy": ["Strategy games reward planning, resource management and foresight.", "Some are turn-based, while others run in real time.", "Players often control armies, cities or entire civilizations.", "Knowing the rules deeply matters more than fast reflexes.", "The genre is a pillar of competitive esports and long-term play."], "Puzzle": ["Puzzle games challenge logic, pattern recognition and spatial thinking.", "Rules are usually simple, but the solutions can be deep.", "They suit short sessions, which made them popular on handhelds and phones.", "Some use falling pieces, others use physics or hidden rules.", "Many reward patience more than speed."], "Platformer": ["Platformers are built around running, jumping and precise movement.", "Levels are designed as obstacle courses with enemies and hazards.", "The genre began in 2D arcades and moved into 3D in the 1990s.", "Power-ups and secrets reward exploration.", "Fair, readable level design is what makes a platformer great."], "Shooter": ["Shooters center on aiming and shooting, from spaceships to first-person combat.", "The first-person shooter became a major genre in the 1990s.", "Online multiplayer turned many shooters into competitive esports.", "Good shooters balance weapons, maps and movement.", "Many modern shooters add progression, loadouts and seasons."], "Fighting": ["Fighting games pit characters against each other in one-on-one duels.", "Players learn move lists, combos and character matchups.", "Timing and reading the opponent matter as much as speed.", "Street Fighter II in 1991 helped start the modern competitive scene.", "Tournaments such as Evo keep the community active."], "Racing": ["Racing games range from realistic simulators to wild arcade kart racers.", "Handling models decide how a car feels.", "Tracks and cars are often unlocked as you progress.", "Time trials and rival ghosts add replay value.", "Many racing games support split-screen or online competition."], "Sports": ["Sports games recreate real or imaginary competitions.", "Some aim for realism, others for exaggerated arcade fun.", "Annual releases update rosters and rules for each season.", "Local multiplayer made them a staple of living rooms.", "Esports versions of soccer and basketball titles draw large audiences."], "Simulation": ["Simulation games model an activity, a system or a way of life.", "They often have no fixed ending, so players set their own goals.", "Management, building and farming are common themes.", "Patience and planning are rewarded over time.", "They appeal to players who enjoy creating and optimizing."], "Horror": ["Horror games aim to create fear, tension and unease.", "Limited resources and hidden threats keep players nervous.", "Sound design and atmosphere matter as much as visuals.", "The term “survival horror” was popularized by Resident Evil in 1996.", "Pacing alternates between calm exploration and sudden danger."], "Sandbox": ["Sandbox games give players tools and freedom rather than a fixed path.", "Building, exploring and experimenting are at the heart of play.", "Many generate worlds procedurally so every game is different.", "Players often share creations, mods and servers online.", "They suit both solo relaxation and group projects."], "Music": ["Music games turn rhythm into gameplay.", "Players press buttons in time with songs.", "Special controllers, such as plastic guitars, add to the fun.", "Scores reward accuracy and streaks.", "The genre boomed in the mid-2000s."]};
+const PLAT={"Arcade": "coin-operated cabinets found in arcades, bars and shops, which drove the early industry.", "Electronika 60": "a Soviet computer on which Tetris was first programmed in 1984.", "Apple II": "a home computer launched by Apple in 1977.", "Macintosh": "Apple’s computer line, first released in 1984.", "Amiga": "a Commodore home computer launched in 1985 and popular for games in Europe.", "MS-DOS": "the text-based operating system of IBM-compatible PCs in the 1980s and 1990s.", "PC": "personal computers offer the widest range of hardware, mods and online services.", "Famicom": "Nintendo’s Japanese home console, released in 1983.", "Famicom Disk System": "a 1986 disk-drive add-on for Nintendo’s Famicom in Japan.", "NES": "released in North America in 1985, it revived the home console market.", "Game Boy": "Nintendo’s handheld, launched in 1989 and the best-known of its era.", "Game Boy Color": "the 1998 color successor to the Game Boy.", "SNES": "Nintendo’s 16-bit console, launched in 1990 in Japan and 1991 in North America.", "Mega Drive": "Sega’s 16-bit console, launched in Japan in 1988 and known as Genesis in North America.", "Jaguar": "a console released by Atari in 1993.", "Saturn": "Sega’s console, launched in Japan in 1994.", "PlayStation": "Sony’s first console, launched in Japan in 1994.", "Nintendo 64": "released in 1996, it popularized the analog stick on consoles.", "PlayStation 2": "launched in 2000, it is the best-selling console of all time.", "Xbox": "Microsoft’s first console, launched in 2001.", "GameCube": "Nintendo’s 2001 console, which used small optical discs.", "Xbox 360": "Microsoft’s console launched in 2005, a pioneer of online console play.", "PlayStation 3": "Sony’s console launched in 2006 with a Blu-ray drive.", "Wii": "launched in 2006 with motion controls.", "3DS": "Nintendo’s handheld launched in 2011 with a glasses-free 3D screen.", "Wii U": "Nintendo’s 2012 console with a tablet-style controller.", "PlayStation 4": "Sony’s console, launched in 2013.", "Xbox One": "Microsoft’s console, launched in 2013.", "Switch": "Nintendo’s 2017 hybrid, played at home or on the go.", "PlayStation 5": "Sony’s console, launched in 2020.", "Xbox Series": "Microsoft’s console generation, launched in 2020.", "iOS": "Apple’s mobile system, home to the App Store since 2008.", "Android": "Google’s mobile system, which reached phones in 2008.", "mobile": "games on phones and tablets reach huge casual audiences.", "consoles": "home consoles connect to a TV and are built mainly for games."};
+const ALIAS={PS2:"PlayStation 2",PS3:"PlayStation 3",PS4:"PlayStation 4",PS5:"PlayStation 5"};
+function showGame(i){
+  const g=games[i],f=g.f;detail.textContent="";
+  const w=mk("div","wrap article");
+  const back=mk("a","btn alt","← Back to search");back.href="#search";
+  w.append(back,mk("div","yr",f[2]),mk("h2","",g.t),mk("p","lead",f[3]+" · "+f[0]));
+  const yr=+f[2],age=new Date().getFullYear()-yr,dec=Math.floor(yr/10)*10;
+  const first=f[4].split("/").map(p=>ALIAS[p]||p).find(p=>PLAT[p]);
+  const sum=fullText(g)+" "+(GENRE[f[3]]?GENRE[f[3]][0]+" ":"")+(first?first+": "+PLAT[first]+" ":"")+"It came out "+age+" year"+(age===1?"":"s")+" ago, in the "+dec+"s.";
+  w.append(mk("h3","","Summary"),mk("p","",sum));
+  const back2=mk("a","btn alt","← Back to search");back2.href="#search";
+  const nv=mk("div","nav2");nv.append(back2);w.append(nv);detail.append(w);
+}
+function route(hh){
+  const h=typeof hh==="string"?hh:location.hash.slice(1);
+  const hi=h.startsWith("h-")?history.findIndex(c=>"h-"+slug(c.t)===h):-1;
+  const gi=h.startsWith("g-")?games.findIndex(g=>"g-"+slug(g.t)===h):-1;
+  if(hi>=0)showDetail(hi);else if(gi>=0)showGame(gi);
+  if(hi>=0||gi>=0){detail.hidden=false;mainEl.hidden=true;scrollTo(0,0)}
+  else{detail.hidden=true;mainEl.hidden=false;const t=h&&document.getElementById(h);if(t)t.scrollIntoView()}
+}
+addEventListener("hashchange",()=>route());
+function go(h){try{location.hash=h}catch(e){}route(h)}
+const rvIO="IntersectionObserver" in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");rvIO.unobserve(e.target)}}),{threshold:.1}):null;
+document.querySelectorAll(".head,.tile,.panel,.card").forEach(el=>{el.classList.add("rv");rvIO?rvIO.observe(el):el.classList.add("in")});
+document.addEventListener("pointermove",e=>{
+  const c=e.target.closest(".card,.game");if(!c)return;
+  const r=c.getBoundingClientRect();c.style.setProperty("--mx",(e.clientX-r.left)+"px");c.style.setProperty("--my",(e.clientY-r.top)+"px");
+});
+document.addEventListener("click",e=>{
+  const a=e.target.closest("a[href^='#']");
+  if(a){e.preventDefault();go(a.getAttribute("href").slice(1));return}
+  const c=e.target.closest(".card.hl");
+  if(c&&!e.target.closest(".exp")){const o=c.classList.toggle("open");c.querySelector(".hlt").setAttribute("aria-expanded",o);
+    if(o&&!c.built){c.built=true;c.querySelector(".exp .sum").textContent=hlSummary(c.item,true)}}
+});
+route();
+</script>
+</body>
+</html>
